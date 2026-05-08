@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无砂自净 - meodou 喵豆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#C9A962',
+                        'gold-light': '#D4B97A',
+                        'gold-dark': '#A88B4A',
+                        'gray-dark': '#333333',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F5F5F5',
+                    },
+                    fontFamily: {
+                        'sans': ['Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    fontWeight: {
+                        'light': '500',
+                        'normal': '500',
+                        'medium': '600',
+                        'semibold': '700',
+                        'bold': '800',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-dark font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl font-medium tracking-wider text-gray-dark">meodou</span>
+                    <span class="text-2xl font-medium tracking-wider text-gold">喵豆</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">首页</a>
+                    <a href="index.html#products" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">探索产品</a>
+                    <a href="presale.html" class="nav-link text-sm tracking-wide text-gold">新品预售</a>
+                    <a href="member.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">会员中心</a>
+                    <a href="index.html#about" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">关于我们</a>
+                    <a href="customer-service.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">客户服务</a>
+                    <!-- 购物车 -->
+                    <button onclick="openCart()" class="relative p-2 text-gray-medium hover:text-gold transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                        <span id="cart-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-gold text-white text-xs rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+                <button id="menuBtn" class="md:hidden p-2">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 面包屑 -->
+    <div class="pt-20 bg-gray-bg">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center space-x-2 text-sm text-gray-light">
+                <a href="index.html" class="hover:text-gold transition-colors">首页</a>
+                <span>/</span>
+                <a href="index.html#products" class="hover:text-gold transition-colors">产品</a>
+                <span>/</span>
+                <span class="text-gray-dark" id="breadcrumb-name">无砂自净</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 产品详情 -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- 产品图片 -->
+                <div>
+                    <div class="bg-gray-bg aspect-square flex items-center justify-center mb-4 overflow-hidden" id="main-image">
+                        <img src="images/product-main.png" alt="产品图片" class="w-full h-full object-contain" id="main-product-img">
+                    </div>
+                    <!-- 缩略图 -->
+                    <div class="grid grid-cols-3 gap-4" id="thumbnails">
+                        <div class="bg-gray-bg aspect-square flex items-center justify-center cursor-pointer border-2 border-gold overflow-hidden" id="thumb1-container" onclick="changeMainImage(this)">
+                            <img src="images/product-main.png" alt="产品图" id="thumb1-img" class="w-full h-full object-contain">
+                        </div>
+                        <div class="bg-gray-bg aspect-square flex items-center justify-center cursor-pointer border-2 border-transparent hover:border-gold transition-colors overflow-hidden" id="thumb2-container" onclick="changeMainImage(this)">
+                            <img src="images/product-demo.gif" alt="演示图" id="thumb2-img" class="w-full h-full object-contain">
+                        </div>
+                        <div class="bg-gray-bg aspect-square flex items-center justify-center cursor-pointer border-2 border-transparent hover:border-gold transition-colors" id="thumb3-container">
+                            <span class="text-3xl">🔧</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 产品信息 -->
+                <div>
+                    <div class="mb-4">
+                        <span class="text-gold text-xs tracking-wider uppercase" id="product-tag">核心产品</span>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-light text-gray-dark mb-4" id="product-name">无砂自净</h1>
+                    <p class="text-gray-light mb-6" id="product-subtitle">免猫砂智能猫厕所</p>
+
+                    <div class="flex items-baseline space-x-4 mb-8">
+                        <span class="text-3xl text-gold font-light" id="product-price">¥2,999</span>
+                        <span class="text-gray-light line-through" id="product-original-price">¥3,999</span>
+                    </div>
+
+                    <div class="border-t border-b border-gray-100 py-6 mb-8">
+                        <h3 class="text-sm font-medium text-gray-dark mb-4">产品特点</h3>
+                        <div class="space-y-3" id="product-features">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span class="text-sm text-gray-medium">零猫砂设计，告别粉尘异味</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span class="text-sm text-gray-medium">自动清洁冲洗烘干</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span class="text-sm text-gray-medium">APP远程控制监测</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span class="text-sm text-gray-medium">健康数据实时追踪</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 款式选择（根据商品类型显示） -->
+                    <div class="mb-6" id="style-selection">
+                        <h3 class="text-sm font-medium text-gray-dark mb-3" id="style-label">颜色款式</h3>
+                        <div class="flex flex-wrap gap-3" id="style-options">
+                            <!-- 由JS根据商品ID动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 数量选择 -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-dark mb-3">购买数量</h3>
+                        <div class="flex items-center">
+                            <button class="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-dark hover:border-gold hover:text-gold transition-colors" onclick="updateQuantity(-1)">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                </svg>
+                            </button>
+                            <input type="number" id="buy-quantity" value="1" min="1" max="99" class="w-16 h-10 border-t border-b border-gray-200 text-center text-gray-dark focus:outline-none focus:border-gold">
+                            <button class="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-dark hover:border-gold hover:text-gold transition-colors" onclick="updateQuantity(1)">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 购买按钮 -->
+                    <div class="flex gap-4 mb-8">
+                        <button class="flex-1 py-4 bg-gold text-white font-medium hover:bg-gold-dark transition-colors" onclick="openBuyModal()">
+                            立即购买
+                        </button>
+                        <button class="px-6 py-4 border border-gold text-gold font-medium hover:bg-gold hover:text-white transition-colors" onclick="addToCart()">
+                            加入购物车
+                        </button>
+                    </div>
+
+                    <!-- 服务保障 -->
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <svg class="w-6 h-6 text-gold mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                            <p class="text-xs text-gray-light">正品保障</p>
+                        </div>
+                        <div>
+                            <svg class="w-6 h-6 text-gold mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            <p class="text-xs text-gray-light">7天无理由</p>
+                        </div>
+                        <div>
+                            <svg class="w-6 h-6 text-gold mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            <p class="text-xs text-gray-light">全国联保</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品详情标签页 -->
+    <section class="py-16 bg-gray-bg">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- 标签导航 -->
+            <div class="flex border-b border-gray-200 mb-8">
+                <button class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-gold text-gold" data-tab="description">产品详情</button>
+                <button class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-light hover:text-gray-dark" data-tab="specs">规格参数</button>
+                <button class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-light hover:text-gray-dark" data-tab="reviews">用户评价</button>
+            </div>
+
+            <!-- 产品详情内容 -->
+            <div id="description" class="tab-content">
+                <div class="bg-white p-8 md:p-12">
+                    <div class="max-w-3xl mx-auto">
+                        <h3 class="text-2xl font-light text-gray-dark mb-6">重新定义猫咪如厕体验</h3>
+                        <p class="text-gray-medium leading-relaxed mb-8">
+                            无砂自净智能猫厕所采用革命性的免猫砂设计，彻底告别传统猫砂带来的粉尘、异味和清理烦恼。
+                            通过先进的自动清洁系统，一键完成冲洗、烘干全过程，让您的爱宠享受更卫生、更舒适的生活体验。
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-8 mb-12">
+                            <div class="bg-gray-bg p-6">
+                                <h4 class="text-gold font-light mb-3">零猫砂科技</h4>
+                                <p class="text-sm text-gray-light leading-relaxed">
+                                    采用专利设计的特殊滤网结构，配合高效水流冲洗系统，
+                                    无需任何猫砂即可实现完美清洁，每年为您节省上千元猫砂费用。
+                                </p>
+                            </div>
+                            <div class="bg-gray-bg p-6">
+                                <h4 class="text-gold font-light mb-3">智能感应</h4>
+                                <p class="text-sm text-gray-light leading-relaxed">
+                                    内置高精度传感器，实时监测猫咪使用情况，
+                                    自动启动清洁程序，确保每次使用都是全新体验。
+                                </p>
+                            </div>
+                            <div class="bg-gray-bg p-6">
+                                <h4 class="text-gold font-light mb-3">健康追踪</h4>
+                                <p class="text-sm text-gray-light leading-relaxed">
+                                    通过APP记录猫咪排泄频率、时长等数据，
+                                    异常情况及时提醒，成为您爱宠的健康守护者。
+                                </p>
+                            </div>
+                            <div class="bg-gray-bg p-6">
+                                <h4 class="text-gold font-light mb-3">静音设计</h4>
+                                <p class="text-sm text-gray-light leading-relaxed">
+                                    采用静音电机和降噪结构设计，
+                                    运行音量低于40分贝，不打扰您和爱宠的宁静时光。
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 产品演示GIF -->
+                        <div class="mb-8" id="demo-gif-section">
+                            <h4 class="text-lg font-light text-gray-dark mb-4 text-center">智能运作演示</h4>
+                            <div class="bg-gray-bg p-8 flex items-center justify-center">
+                                <img src="images/product-demo.gif" alt="产品演示动图" class="max-w-full h-auto rounded-lg shadow-lg">
+                            </div>
+                        </div>
+
+                        <!-- 核心优势展示 -->
+                        <div class="mt-16">
+                            <h3 class="text-2xl font-light text-gray-dark mb-8 text-center">五大核心优势</h3>
+                            <div class="space-y-6">
+                                <!-- 优势1 -->
+                                <div class="bg-gradient-to-r from-amber-50 to-white p-6 rounded-lg border border-amber-100">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-2xl">🛡️</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-dark mb-2">三重智能感应 安全加倍</h4>
+                                            <p class="text-gray-medium text-sm leading-relaxed">融合视觉、重力、嗅觉三大感应技术，精准识别猫咪进出，运行灵敏更稳妥。开放式结构无封闭舱体风险，幼猫、成年猫、老年猫都能安心使用。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 优势2 -->
+                                <div class="bg-gradient-to-r from-amber-50 to-white p-6 rounded-lg border border-amber-100">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-2xl">🚫</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-dark mb-2">免用猫砂 告别搬运与卫生烦恼</h4>
+                                            <p class="text-gray-medium text-sm leading-relaxed">无需任何猫砂耗材，省去采购、囤货、搬运、更换的繁琐流程。彻底解决猫砂扬尘、外溅散落、积污滋生细菌等卫生痛点，居家更洁净。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 优势3 -->
+                                <div class="bg-gradient-to-r from-amber-50 to-white p-6 rounded-lg border border-amber-100">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-2xl">📐</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-dark mb-2">精巧适中机身 不浪费空间</h4>
+                                            <p class="text-gray-medium text-sm leading-relaxed">不盲目跟风超大内舱设计，采用合理适配的开放式体量。尺寸克制不占地，造型简约百搭，客厅、卧室、小户型都能轻松摆放。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 优势4 -->
+                                <div class="bg-gradient-to-r from-amber-50 to-white p-6 rounded-lg border border-amber-100">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-2xl">🤖</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-dark mb-2">智能自动运维 省心懒人必备</h4>
+                                            <p class="text-gray-medium text-sm leading-relaxed">依托三重感应自动完成污物处理，无需人工频繁打理。日常维护简单轻松，解放养宠双手，长久使用干净又省心。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 优势5 -->
+                                <div class="bg-gradient-to-r from-amber-50 to-white p-6 rounded-lg border border-amber-100">
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-2xl">📱</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-dark mb-2">高清摄像 + APP 互联 猫咪健康实时监测</h4>
+                                            <p class="text-gray-medium text-sm leading-relaxed">内置高清摄像头，搭配专属APP远程实时监控猫咪如厕行为。自动记录如厕频次、时长等数据，智能分析猫咪身体状态，及时预判潜在健康隐患，足不出户就能守护爱猫健康。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 猫垫结构示意图 -->
+                        <div class="mb-8 hidden" id="structure-section">
+                            <h4 class="text-lg font-light text-gray-dark mb-4 text-center">产品结构示意图</h4>
+                            <div class="bg-transparent p-8 flex items-center justify-center">
+                                <img src="images/cat-pad-structure-clean.png" alt="猫垫结构示意图" class="max-w-full h-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规格参数 -->
+            <div id="specs" class="tab-content hidden">
+                <div class="bg-white p-8 md:p-12">
+                    <table class="w-full max-w-3xl mx-auto">
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="py-4 text-gray-light w-1/3">产品名称</td>
+                                <td class="py-4 text-gray-dark">无砂自净智能猫厕所</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">产品型号</td>
+                                <td class="py-4 text-gray-dark">MD-C001</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">产品尺寸</td>
+                                <td class="py-4 text-gray-dark">600 x 500 x 450 mm</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">适用体重</td>
+                                <td class="py-4 text-gray-dark">2-10kg</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">水箱容量</td>
+                                <td class="py-4 text-gray-dark">5L</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">额定功率</td>
+                                <td class="py-4 text-gray-dark">60W</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">额定电压</td>
+                                <td class="py-4 text-gray-dark">AC 220V 50Hz</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">净重</td>
+                                <td class="py-4 text-gray-dark">8.5kg</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">连接方式</td>
+                                <td class="py-4 text-gray-dark">Wi-Fi 2.4GHz</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 text-gray-light">APP支持</td>
+                                <td class="py-4 text-gray-dark">iOS / Android</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 用户评价 -->
+            <div id="reviews" class="tab-content hidden">
+                <div class="bg-white p-8 md:p-12">
+                    <div class="max-w-3xl mx-auto space-y-8">
+                        <!-- 评价1 -->
+                        <div class="border-b border-gray-100 pb-8">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-bg rounded-full flex items-center justify-center">
+                                        <span class="text-sm">🐱</span>
+                                    </div>
+                                    <span class="text-gray-dark">猫咪爱好者</span>
+                                </div>
+                                <div class="flex text-gold">
+                                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-medium leading-relaxed mb-4">
+                                终于不用再买猫砂了！以前每个月光是猫砂就要花200多，现在完全省下来了。
+                                而且完全没有异味，家里空气清新了很多。我家两只猫都很喜欢用。
+                            </p>
+                            <p class="text-xs text-gray-light">2024年1月15日</p>
+                        </div>
+
+                        <!-- 评价2 -->
+                        <div class="border-b border-gray-100 pb-8">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-bg rounded-full flex items-center justify-center">
+                                        <span class="text-sm">😺</span>
+                                    </div>
+                                    <span class="text-gray-dark">铲屎官小王</span>
+                                </div>
+                                <div class="flex text-gold">
+                                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-medium leading-relaxed mb-4">
+                                APP很好用，可以看到猫咪每天的使用情况。有一次发现猫咪上厕所次数变少，
+                                及时带去医院检查，医生说发现得早。这个功能太实用了！
+                            </p>
+                            <p class="text-xs text-gray-light">2024年1月10日</p>
+                        </div>
+
+                        <!-- 评价3 -->
+                        <div class="border-b border-gray-100 pb-8">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-bg rounded-full flex items-center justify-center">
+                                        <span class="text-sm">😸</span>
+                                    </div>
+                                    <span class="text-gray-dark">白领铲屎官</span>
+                                </div>
+                                <div class="flex text-gold">
+                                    <span>★</span><span>★</span><span>★</span><span>★</span><span>☆</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-medium leading-relaxed mb-4">
+                                上班族必备！以前每天下班还要铲屎，现在完全不用了。
+                                运行声音很小，放在阳台完全不吵。唯一的建议是希望能出更多颜色。
+                            </p>
+                            <p class="text-xs text-gray-light">2024年1月5日</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 相关产品推荐 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-2xl font-light text-gray-dark mb-8 text-center">相关推荐</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <a href="product-detail.html?id=2" class="group">
+                    <div class="bg-gray-bg aspect-square mb-4 flex items-center justify-center">
+                        <span class="text-5xl">🍽️</span>
+                    </div>
+                    <h3 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">智享喂食器</h3>
+                    <p class="text-gold text-sm mt-1">¥899</p>
+                </a>
+                <a href="product-detail.html?id=3" class="group">
+                    <div class="bg-gray-bg aspect-square mb-4 flex items-center justify-center">
+                        <span class="text-5xl">💧</span>
+                    </div>
+                    <h3 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">活泉饮水机</h3>
+                    <p class="text-gold text-sm mt-1">¥599</p>
+                </a>
+                <a href="product-detail.html?id=4" class="group">
+                    <div class="bg-gray-bg aspect-square mb-4 flex items-center justify-center">
+                        <span class="text-5xl">📍</span>
+                    </div>
+                    <h3 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">守护项圈</h3>
+                    <p class="text-gold text-sm mt-1">¥499</p>
+                </a>
+                <a href="product-detail.html?id=5" class="group">
+                    <div class="bg-gray-bg aspect-square mb-4 flex items-center justify-center">
+                        <span class="text-5xl">🏠</span>
+                    </div>
+                    <h3 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">云端猫窝</h3>
+                    <p class="text-gold text-sm mt-1">¥1,299</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-dark text-white py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <span class="text-xl font-light tracking-wider text-white">meodou</span>
+                        <span class="text-xl font-light tracking-wider text-gold">喵豆</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        科技，让爱更简单<br>
+                        为宠物创造更美好的生活
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm tracking-wider mb-6">产品</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="product-detail.html?id=1" class="hover:text-gold transition-colors">喵豆智能盆</a></li>
+                        <li><a href="product-detail.html?id=2" class="hover:text-gold transition-colors">智享喂食器</a></li>
+                        <li><a href="product-detail.html?id=3" class="hover:text-gold transition-colors">活泉饮水机</a></li>
+                        <li><a href="product-detail.html?id=4" class="hover:text-gold transition-colors">守护项圈</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm tracking-wider mb-6">服务</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="customer-service.html" class="hover:text-gold transition-colors">在线客服</a></li>
+                        <li><a href="#" class="hover:text-gold transition-colors">售后服务</a></li>
+                        <li><a href="#" class="hover:text-gold transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm tracking-wider mb-6">联系我们</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li>客服热线：400-888-6666</li>
+                        <li>服务时间：9:00-21:00</li>
+                        <li>邮箱：service@meodou.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center">
+                <p class="text-gray-600 text-sm">© 2024 meodou 喵豆. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/product.js"></script>
+
+    <!-- 购物车弹窗 -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <h3 class="text-xl font-light text-gray-dark">购物车</h3>
+                <button onclick="closeCart()" class="text-gray-400 hover:text-gray-dark">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+                <div class="text-center text-gray-light py-12">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                    </svg>
+                    <p>购物车是空的</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-medium">合计</span>
+                    <span class="text-2xl text-gold font-light" id="cart-total">¥0</span>
+                </div>
+                <button onclick="checkout()" class="w-full py-4 bg-gold text-white font-medium hover:bg-gold-dark transition-colors">
+                    结算
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 购物车数据 - 使用 localStorage
+        function getCart() {
+            const cart = localStorage.getItem('meodou_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('meodou_cart', JSON.stringify(cart));
+        }
+
+        let cart = getCart();
+
+        // 初始化购物车徽章
+        function initCartBadge() {
+            const cartBadge = document.getElementById('cart-badge');
+            if (cartBadge) {
+                const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartBadge.textContent = totalQty;
+                cartBadge.classList.toggle('hidden', totalQty === 0);
+            }
+        }
+
+        function openCart() {
+            cart = getCart();
+            updateCartUI();
+            document.getElementById('cart-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        window.addToCartGlobal = function(product) {
+            cart = getCart();
+            const existing = cart.find(item => item.id === product.id && item.color === product.color);
+            if (existing) {
+                existing.quantity += product.quantity || 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    color: product.color || '雪域白',
+                    quantity: product.quantity || 1
+                });
+            }
+            saveCart(cart);
+            initCartBadge();
+            updateCartUI();
+            openCart();
+        };
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            if (cartTotal) cartTotal.textContent = '¥' + total.toLocaleString();
+            if (!cartItems) return;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center text-gray-light py-12">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                        <p>购物车是空的</p>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="flex gap-4 py-4 border-b border-gray-100">
+                        <div class="w-20 h-20 bg-gray-bg flex items-center justify-center rounded">
+                            <span class="text-3xl">🐱</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-gray-dark font-medium">${item.name}</h4>
+                            <p class="text-gray-light text-sm">${item.color}</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-gold">¥${item.price}</span>
+                                <div class="flex items-center">
+                                    <button onclick="updateCartItem(${index}, -1)" class="w-8 h-8 border border-gray-200 flex items-center justify-center">-</button>
+                                    <span class="w-8 text-center">${item.quantity}</span>
+                                    <button onclick="updateCartItem(${index}, 1)" class="w-8 h-8 border border-gray-200 flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateCartItem(index, delta) {
+            cart = getCart();
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            saveCart(cart);
+            initCartBadge();
+            updateCartUI();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('购物车是空的');
+                return;
+            }
+            alert('请前往商品详情页下单');
+            closeCart();
+        }
+
+        // 初始化
+        loadProductInfo();
+        initCartBadge();
+        initStyleOptions();
+    </script>
+
+    <!-- 购买弹窗 -->
+    <div id="buy-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 遮罩层 -->
+        <div class="absolute inset-0 bg-black/50" onclick="closeBuyModal()"></div>
+        <!-- 弹窗内容 -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-full max-w-lg mx-4 rounded-lg shadow-xl">
+            <div class="p-6">
+                <!-- 弹窗标题（固定） -->
+                <div class="flex items-center justify-between mb-6 sticky top-0 bg-white z-10 pb-2 border-b border-gray-100">
+                    <h3 class="text-xl font-light text-gray-dark">确认订单</h3>
+                    <button onclick="closeBuyModal()" class="text-gray-400 hover:text-gray-dark">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 滚动内容区域 -->
+                <div class="max-h-[70vh] overflow-y-auto pr-2">
+                    <!-- 产品信息 -->
+                    <div class="flex gap-4 mb-6 p-4 bg-gray-bg rounded">
+                        <div class="w-20 h-20 bg-white flex items-center justify-center rounded">
+                            <span class="text-3xl">🐱</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-gray-dark font-medium" id="modal-product-name">无砂自净</h4>
+                            <p class="text-gray-light text-sm" id="modal-product-subtitle">免猫砂智能猫厕所</p>
+                            <p class="text-gold mt-1" id="modal-product-price">¥1,999</p>
+                        </div>
+                    </div>
+
+                    <!-- 已选信息 -->
+                    <div class="mb-6">
+                        <div class="flex justify-between py-2 border-b border-gray-100">
+                            <span class="text-gray-light" id="modal-style-label">颜色款式</span>
+                            <span class="text-gray-dark" id="modal-selected-color">雪域白</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100">
+                            <span class="text-gray-light">购买数量</span>
+                            <span class="text-gray-dark" id="modal-selected-quantity">1</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100">
+                            <span class="text-gray-light">商品总价</span>
+                            <span class="text-gold font-medium" id="modal-total-price">¥2,999</span>
+                        </div>
+                    </div>
+
+                    <!-- 配送方式 -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-gray-dark mb-3">配送方式</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 border border-gray-200 rounded cursor-pointer hover:border-gold transition-colors">
+                                <input type="radio" name="shipping" value="standard" checked class="mr-3 text-gold" onchange="updatePriceDetail()">
+                                <span class="flex-1">普通快递</span>
+                                <span class="text-gray-light">¥0.00</span>
+                                <span class="text-xs text-gray-light ml-2">3-5天送达</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded cursor-pointer hover:border-gold transition-colors">
+                                <input type="radio" name="shipping" value="express" class="mr-3 text-gold" onchange="updatePriceDetail()">
+                                <span class="flex-1">顺丰次日达</span>
+                                <span class="text-gray-light">¥15.00</span>
+                                <span class="text-xs text-gray-light ml-2">1-2天送达</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 价格明细 -->
+                    <div class="mb-6 p-4 bg-gray-bg rounded">
+                        <div class="flex justify-between py-1">
+                            <span class="text-gray-light">商品总价</span>
+                            <span class="text-gray-dark" id="detail-total-price">¥1,999</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-gray-light">运费</span>
+                            <span class="text-gray-dark" id="detail-shipping-fee">¥0.00</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t border-gray-200 mt-2 pt-2">
+                            <span class="text-gray-dark font-medium">实付金额</span>
+                            <span class="text-gold font-bold text-lg" id="detail-actual-amount">¥1,999</span>
+                        </div>
+                    </div>
+
+                    <!-- 收货地址 -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-gray-dark mb-3">收货地址</h4>
+                        <div class="space-y-3">
+                            <input type="text" id="receiver-name" placeholder="收货人姓名" class="w-full px-4 py-3 border border-gray-200 rounded focus:outline-none focus:border-gold">
+                            <input type="tel" id="receiver-phone" placeholder="联系电话" class="w-full px-4 py-3 border border-gray-200 rounded focus:outline-none focus:border-gold">
+                            <select id="province" class="w-full px-4 py-3 border border-gray-200 rounded focus:outline-none focus:border-gold">
+                                <option value="">请选择省份</option>
+                                <option value="北京">北京市</option>
+                                <option value="上海">上海市</option>
+                                <option value="广东">广东省</option>
+                                <option value="浙江">浙江省</option>
+                                <option value="江苏">江苏省</option>
+                                <option value="四川">四川省</option>
+                                <option value="湖北">湖北省</option>
+                                <option value="湖南">湖南省</option>
+                                <option value="福建">福建省</option>
+                                <option value="山东">山东省</option>
+                                <option value="河南">河南省</option>
+                                <option value="河北">河北省</option>
+                                <option value="陕西">陕西省</option>
+                                <option value="辽宁">辽宁省</option>
+                                <option value="吉林">吉林省</option>
+                                <option value="黑龙江">黑龙江省</option>
+                                <option value="安徽">安徽省</option>
+                                <option value="江西">江西省</option>
+                                <option value="重庆">重庆市</option>
+                                <option value="天津">天津市</option>
+                                <option value="山西">山西省</option>
+                                <option value="云南">云南省</option>
+                                <option value="贵州">贵州省</option>
+                                <option value="甘肃">甘肃省</option>
+                                <option value="海南">海南省</option>
+                                <option value="内蒙古">内蒙古自治区</option>
+                                <option value="广西">广西壮族自治区</option>
+                                <option value="西藏">西藏自治区</option>
+                                <option value="宁夏">宁夏回族自治区</option>
+                                <option value="青海">青海省</option>
+                                <option value="新疆">新疆维吾尔自治区</option>
+                                <option value="台湾">台湾省</option>
+                                <option value="香港">香港特别行政区</option>
+                                <option value="澳门">澳门特别行政区</option>
+                            </select>
+                            <input type="text" id="detail-address" placeholder="详细地址（街道、小区、楼栋、门牌号）" class="w-full px-4 py-3 border border-gray-200 rounded focus:outline-none focus:border-gold">
+                        </div>
+                        <div class="mt-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="save-address" class="mr-2 text-gold">
+                                <span class="text-sm text-gray-light">保存为常用地址</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 备注 -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-gray-dark mb-3">订单备注（可选）</h4>
+                        <textarea id="order-note" placeholder="请输入备注信息" class="w-full px-4 py-3 border border-gray-200 rounded focus:outline-none focus:border-gold" rows="2"></textarea>
+                    </div>
+
+                    <!-- 支付方式 -->
+                    <div class="mb-6">
+                        <h4 class="text-sm font-medium text-gray-dark mb-3">支付方式</h4>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="flex flex-col items-center justify-center p-3 border border-gray-200 rounded cursor-pointer hover:border-gold transition-colors">
+                                <input type="radio" name="payment" value="wechat" checked class="sr-only">
+                                <span class="text-2xl mb-1">💚</span>
+                                <span class="text-sm">微信支付</span>
+                            </label>
+                            <label class="flex flex-col items-center justify-center p-3 border border-gray-200 rounded cursor-pointer hover:border-gold transition-colors">
+                                <input type="radio" name="payment" value="alipay" class="sr-only">
+                                <span class="text-2xl mb-1">💙</span>
+                                <span class="text-sm">支付宝</span>
+                            </label>
+                            <label class="flex flex-col items-center justify-center p-3 border border-gray-200 rounded cursor-pointer hover:border-gold transition-colors">
+                                <input type="radio" name="payment" value="card" class="sr-only">
+                                <span class="text-2xl mb-1">💳</span>
+                                <span class="text-sm">银行卡</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 确认按钮 -->
+                    <button class="w-full py-4 bg-gold text-white font-medium hover:bg-gold-dark transition-colors rounded" onclick="submitOrder()">
+                        提交订单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 购买相关变量
+        let selectedColor = '雪域白';
+        let selectedQuantity = 1;
+        let currentPrice = 1999;
+
+        // 产品数据配置
+        const productData = {
+            '1': {
+                name: '无砂自净',
+                subtitle: '免猫砂智能猫厕所',
+                price: '¥2,999',
+                priceNum: 2999,
+                tag: '核心产品',
+                image: 'images/product-main.png',
+                thumbImage: 'images/product-main.png'
+            },
+            '2': {
+                name: '智享喂食器',
+                subtitle: 'APP远程控制喂食',
+                price: '¥899',
+                priceNum: 899,
+                tag: '热销产品',
+                image: 'images/product-feeder.png',
+                thumbImage: 'images/product-feeder.png'
+            },
+            '3': {
+                name: '活泉饮水机',
+                subtitle: '循环过滤活水系统',
+                price: '¥599',
+                priceNum: 599,
+                tag: '',
+                image: 'images/product-water.png',
+                thumbImage: 'images/product-water.png'
+            },
+            '4': {
+                name: '守护项圈',
+                subtitle: 'GPS定位健康监测',
+                price: '¥499',
+                priceNum: 499,
+                tag: '',
+                image: 'images/product-collar.png',
+                thumbImage: 'images/product-collar.png'
+            },
+            '5': {
+                name: '云端猫窝',
+                subtitle: '恒温智能睡眠舱',
+                price: '¥1,299',
+                priceNum: 1299,
+                tag: '新品',
+                image: 'images/product-bed.png',
+                thumbImage: 'images/product-bed.png'
+            },
+            '6': {
+                name: 'meodou猫垫',
+                subtitle: '智能自热宠物垫',
+                price: '¥39.9',
+                priceNum: 39.9,
+                tag: '新品',
+                image: 'images/cat-pad-product.png',
+                thumbImage: 'images/cat-pad-product.png'
+            }
+        };
+
+        // 加载产品信息
+        function loadProductInfo() {
+            const productId = new URLSearchParams(window.location.search).get('id') || '1';
+            const product = productData[productId];
+
+            if (product) {
+                // 更新标题
+                document.getElementById('product-name').textContent = product.name;
+                document.getElementById('product-subtitle').textContent = product.subtitle;
+                document.getElementById('breadcrumb-name').textContent = product.name;
+                document.title = product.name + ' - meodou 喵豆';
+
+                // 更新价格
+                const priceElement = document.getElementById('product-price');
+                if (priceElement) priceElement.textContent = product.price;
+                currentPrice = product.priceNum;
+
+                // 更新标签
+                const tagElement = document.getElementById('product-tag');
+                if (tagElement && product.tag) {
+                    tagElement.textContent = product.tag;
+                    tagElement.style.display = 'inline-block';
+                } else if (tagElement) {
+                    tagElement.style.display = 'none';
+                }
+
+                // 更新图片
+                const mainImg = document.getElementById('main-product-img');
+                const thumb1Img = document.getElementById('thumb1-img');
+                if (mainImg) {
+                    mainImg.src = product.image;
+                    mainImg.alt = product.name;
+                }
+                if (thumb1Img) {
+                    thumb1Img.src = product.thumbImage;
+                    thumb1Img.alt = product.name;
+                }
+
+                // 更新弹窗信息
+                document.getElementById('modal-product-name').textContent = product.name;
+                document.getElementById('modal-product-subtitle').textContent = product.subtitle;
+                document.getElementById('modal-product-price').textContent = product.price;
+            }
+        }
+
+        // 款式配置：商品ID -> 选项列表
+        const styleConfigs = {
+            // 猫垫产品（ID=6）：10天款、15天款、20天款
+            '6': {
+                label: '续航款式',
+                options: [
+                    { name: '10天款', price: 39.9 },
+                    { name: '15天款', price: 49.9 },
+                    { name: '20天款', price: 59.9 }
+                ]
+            },
+            // 其他产品：颜色选项
+            'default': {
+                label: '颜色款式',
+                options: [
+                    { name: '雪域白', colorCode: '#f5f5f5' },
+                    { name: '星空灰', colorCode: '#666666' },
+                    { name: '极夜黑', colorCode: '#333333' },
+                    { name: '樱花粉', colorCode: '#f8b4c4' }
+                ]
+            }
+        };
+
+        // 价格映射
+        const productPrices = {
+            '1': 2999, '2': 899, '3': 599, '4': 499, '5': 1299
+        };
+
+        // 初始化款式选项
+        function initStyleOptions() {
+            const productId = new URLSearchParams(window.location.search).get('id') || '1';
+            const config = styleConfigs[productId] || styleConfigs['default'];
+            const styleLabel = document.getElementById('style-label');
+            const styleOptions = document.getElementById('style-options');
+
+            if (styleLabel) styleLabel.textContent = config.label;
+            if (!styleOptions) return;
+
+            styleOptions.innerHTML = config.options.map((opt, index) => {
+                const isSelected = index === 0;
+                const baseClass = 'style-option px-4 py-2 border-2 text-sm transition-colors';
+                const selectedClass = 'border-gold bg-gold text-white';
+                const normalClass = 'border-gray-200 hover:border-gold text-gray-dark';
+
+                if (productId === '6') {
+                    // 猫垫产品：显示款式和价格
+                    return `<button class="${baseClass} ${selectedClass}" data-style="${opt.name}" data-price="${opt.price}">${opt.name} ¥${opt.price}</button>`;
+                } else {
+                    // 其他产品：显示颜色
+                    const bgStyle = opt.colorCode ? `background-color: ${opt.colorCode};` : '';
+                    return `<button class="${baseClass} ${selectedClass}" data-style="${opt.name}" style="${bgStyle}">${opt.name}</button>`;
+                }
+            }).join('');
+
+            // 设置初始价格（如果是猫垫产品）
+            if (productId === '6') {
+                currentPrice = config.options[0].price;
+                selectedColor = config.options[0].name;
+            }
+
+            // 更新购买弹窗中的显示
+            updateModalInfo();
+
+            // 绑定点击事件
+            document.querySelectorAll('.style-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.style-option').forEach(b => {
+                        b.classList.remove('border-gold', 'bg-gold', 'text-white');
+                        b.classList.add('border-gray-200', 'text-gray-dark');
+                    });
+                    this.classList.remove('border-gray-200', 'text-gray-dark');
+                    this.classList.add('border-gold', 'bg-gold', 'text-white');
+
+                    selectedColor = this.dataset.style;
+
+                    // 如果是猫垫产品，更新价格
+                    if (productId === '6') {
+                        currentPrice = parseInt(this.dataset.price);
+                        updateModalInfo();
+                    }
+                });
+            });
+        }
+
+        // 数量选择
+        function updateQuantity(delta) {
+            const input = document.getElementById('buy-quantity');
+            let qty = parseInt(input.value) + delta;
+            if (qty < 1) qty = 1;
+            if (qty > 99) qty = 99;
+            input.value = qty;
+            selectedQuantity = qty;
+            updateModalInfo();
+        }
+
+        // 监听数量输入
+        document.getElementById('buy-quantity').addEventListener('change', function() {
+            let qty = parseInt(this.value);
+            if (qty < 1) qty = 1;
+            if (qty > 99) qty = 99;
+            this.value = qty;
+            selectedQuantity = qty;
+            updateModalInfo();
+        });
+
+        // 更新弹窗信息
+        function updateModalInfo() {
+            const productId = new URLSearchParams(window.location.search).get('id') || '1';
+            const config = styleConfigs[productId] || styleConfigs['default'];
+
+            // 更新款式标签（颜色款式 或 续航款式）
+            const modalStyleLabel = document.getElementById('modal-style-label');
+            if (modalStyleLabel) modalStyleLabel.textContent = config.label;
+
+            document.getElementById('modal-selected-color').textContent = selectedColor;
+            document.getElementById('modal-selected-quantity').textContent = selectedQuantity;
+            const total = currentPrice * selectedQuantity;
+            document.getElementById('modal-total-price').textContent = '¥' + total.toLocaleString();
+        }
+
+        // 打开购买弹窗
+        function openBuyModal() {
+            updateModalInfo();
+            document.getElementById('buy-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭购买弹窗
+        function closeBuyModal() {
+            document.getElementById('buy-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // 加入购物车
+        function addToCart() {
+            const productName = document.getElementById('product-name').textContent;
+            const productId = new URLSearchParams(window.location.search).get('id') || '1';
+
+            // 使用当前选择的价格（支持动态价格，如猫垫的不同款式）
+            const price = currentPrice;
+
+            // 调用全局购物车函数
+            window.addToCartGlobal({
+                id: productId,
+                name: productName,
+                price: price,
+                color: selectedColor,
+                quantity: selectedQuantity
+            });
+        }
+
+        // 更新价格明细
+        function updatePriceDetail() {
+            const productTotal = currentPrice * selectedQuantity;
+            const shippingRadio = document.querySelector('input[name="shipping"]:checked');
+            const shippingFee = shippingRadio.value === 'express' ? 15 : 0;
+            const actualAmount = productTotal + shippingFee;
+
+            document.getElementById('detail-total-price').textContent = '¥' + productTotal.toLocaleString();
+            document.getElementById('detail-shipping-fee').textContent = '¥' + shippingFee.toFixed(2);
+            document.getElementById('detail-actual-amount').textContent = '¥' + actualAmount.toLocaleString();
+        }
+
+        // 更新弹窗信息的时候同步更新价格
+        const originalUpdateModalInfo = window.updateModalInfo;
+        window.updateModalInfo = function() {
+            if (originalUpdateModalInfo) originalUpdateModalInfo();
+            updatePriceDetail();
+        }
+
+        // 关闭支付弹窗
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // 关闭所有弹窗
+        function closeAllModals() {
+            closeBuyModal();
+            closePaymentModal();
+            document.getElementById('payment-success-modal').classList.add('hidden');
+        }
+
+        // 跳转到订单列表
+        function goToOrders() {
+            window.location.href = 'orders.html';
+        }
+
+        // 生成唯一订单号
+        function generateOrderNo() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+            return 'MD' + year + month + day + random;
+        }
+
+        // 保存常用地址
+        function saveAddress(addressInfo) {
+            if (!document.getElementById('save-address').checked) return;
+
+            let addresses = JSON.parse(localStorage.getItem('meodou_addresses') || '[]');
+            addresses.unshift({
+                ...addressInfo,
+                isDefault: addresses.length === 0
+            });
+            localStorage.setItem('meodou_addresses', JSON.stringify(addresses));
+        }
+
+        // 模拟支付成功
+        function simulatePaymentSuccess() {
+            const orderNo = document.getElementById('success-order-no').textContent;
+            let orders = JSON.parse(localStorage.getItem('meodou_orders') || '[]');
+
+            // 更新订单状态为已支付
+            orders = orders.map(order => {
+                if (order.orderNo === orderNo) {
+                    return { ...order, status: 'paid', payTime: new Date().toISOString() };
+                }
+                return order;
+            });
+
+            localStorage.setItem('meodou_orders', JSON.stringify(orders));
+
+            // 清空购物车中已购买的商品
+            const currentOrder = orders.find(o => o.orderNo === orderNo);
+            if (currentOrder) {
+                let cart = JSON.parse(localStorage.getItem('meodou_cart') || '[]');
+                cart = cart.filter(item => item.id !== currentOrder.productId);
+                localStorage.setItem('meodou_cart', JSON.stringify(cart));
+                window.updateCartBadge();
+            }
+
+            closePaymentModal();
+            document.getElementById('payment-success-modal').classList.remove('hidden');
+        }
+
+        // 提交订单
+        function submitOrder() {
+            const name = document.getElementById('receiver-name').value.trim();
+            const phone = document.getElementById('receiver-phone').value.trim();
+            const province = document.getElementById('province').value;
+            const address = document.getElementById('detail-address').value.trim();
+            const note = document.getElementById('order-note').value.trim();
+
+            const shippingRadio = document.querySelector('input[name="shipping"]:checked');
+            const shippingType = shippingRadio.value === 'express' ? '顺丰次日达' : '普通快递';
+            const shippingFee = shippingRadio.value === 'express' ? 15 : 0;
+
+            const paymentRadio = document.querySelector('input[name="payment"]:checked');
+            const paymentType = paymentRadio.value === 'wechat' ? '微信支付' : paymentRadio.value === 'alipay' ? '支付宝' : '银行卡';
+
+            const productId = new URLSearchParams(window.location.search).get('id') || '1';
+            const productName = document.getElementById('product-name').textContent;
+            const productSubtitle = document.getElementById('product-subtitle').textContent;
+
+            // 验证
+            if (!name) {
+                alert('请输入收货人姓名');
+                return;
+            }
+            if (!phone) {
+                alert('请输入联系电话');
+                return;
+            }
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请输入正确的手机号码');
+                return;
+            }
+            if (!province) {
+                alert('请选择省份');
+                return;
+            }
+            if (!address) {
+                alert('请输入详细地址');
+                return;
+            }
+
+            // 生成订单信息
+            const productTotal = currentPrice * selectedQuantity;
+            const actualAmount = productTotal + shippingFee;
+            const orderNo = generateOrderNo();
+
+            const orderInfo = {
+                orderNo: orderNo,
+                productId: productId,
+                productName: productName,
+                productSubtitle: productSubtitle,
+                productImage: document.getElementById('main-product-img').src,
+                sku: selectedColor,
+                quantity: selectedQuantity,
+                price: currentPrice,
+                productTotal: productTotal,
+                shippingType: shippingType,
+                shippingFee: shippingFee,
+                actualAmount: actualAmount,
+                paymentType: paymentType,
+                receiver: {
+                    name: name,
+                    phone: phone,
+                    province: province,
+                    address: address
+                },
+                note: note,
+                createTime: new Date().toISOString(),
+                status: 'pending' // pending:待支付, paid:已支付, shipped:已发货, completed:已完成, cancelled:已取消
+            };
+
+            // 保存订单到localStorage
+            let orders = JSON.parse(localStorage.getItem('meodou_orders') || '[]');
+            orders.unshift(orderInfo);
+            localStorage.setItem('meodou_orders', JSON.stringify(orders));
+
+            // 保存地址（如果勾选）
+            saveAddress(orderInfo.receiver);
+
+            // 打开支付弹窗
+            closeBuyModal();
+            document.getElementById('payment-amount').textContent = '¥' + actualAmount.toLocaleString();
+            document.getElementById('success-order-no').textContent = orderNo;
+            document.getElementById('payment-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // 启动15分钟倒计时（简单模拟）
+            let countdown = 15 * 60;
+            const countdownEl = document.getElementById('payment-countdown');
+            const timer = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    closePaymentModal();
+                    alert('支付超时，请重新提交订单');
+                    return;
+                }
+                const minutes = Math.floor(countdown / 60).toString().padStart(2, '0');
+                const seconds = (countdown % 60).toString().padStart(2, '0');
+                countdownEl.textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        }
+    </script>
+
+    <!-- 支付弹窗 -->
+    <div id="payment-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 遮罩层 -->
+        <div class="absolute inset-0 bg-black/50"></div>
+        <!-- 弹窗内容 -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-full max-w-md mx-4 rounded-lg shadow-xl">
+            <div class="p-6">
+                <!-- 弹窗标题 -->
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-light text-gray-dark">请支付</h3>
+                    <button onclick="closePaymentModal()" class="text-gray-400 hover:text-gray-dark">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 支付金额 -->
+                <div class="text-center mb-6">
+                    <p class="text-gray-light mb-1">实付金额</p>
+                    <p class="text-gold text-3xl font-bold" id="payment-amount">¥1,999.00</p>
+                </div>
+
+                <!-- 支付二维码 -->
+                <div class="w-48 h-48 mx-auto mb-6 border border-gray-200 rounded overflow-hidden">
+                    <img src="https://picsum.photos/200/200?qr=payment" alt="支付二维码" class="w-full h-full object-cover">
+                </div>
+                <p class="text-center text-xs text-gray-light mb-4">请使用微信/支付宝扫码支付</p>
+
+                <!-- 支付倒计时 -->
+                <div class="text-center mb-6">
+                    <p class="text-sm text-gray-light">支付剩余时间：<span id="payment-countdown" class="text-gold">15:00</span></p>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="py-3 border border-gray-200 text-gray-dark rounded hover:bg-gray-bg transition-colors" onclick="closePaymentModal()">
+                        取消支付
+                    </button>
+                    <button class="py-3 bg-gold text-white rounded hover:bg-gold-dark transition-colors" onclick="simulatePaymentSuccess()">
+                        模拟支付成功
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 支付弹窗结束 -->
+
+    <!-- 支付成功弹窗 -->
+    <div id="payment-success-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 遮罩层 -->
+        <div class="absolute inset-0 bg-black/50"></div>
+        <!-- 弹窗内容 -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-full max-w-md mx-4 rounded-lg shadow-xl">
+            <div class="p-6 text-center">
+                <div class="text-5xl text-green-500 mb-4">✅</div>
+                <h3 class="text-xl font-medium text-gray-dark mb-2">支付成功</h3>
+                <p class="text-gray-light mb-6">您的订单已提交成功，我们将尽快为您发货</p>
+
+                <div class="bg-gray-bg p-4 rounded mb-6 text-left">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-light">订单号</span>
+                        <span class="text-gray-dark font-medium" id="success-order-no">MD20240520123456</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-light">预计发货时间</span>
+                        <span class="text-gray-dark">2个工作日内</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="py-3 border border-gray-200 text-gray-dark rounded hover:bg-gray-bg transition-colors" onclick="closeAllModals()">
+                        返回首页
+                    </button>
+                    <button class="py-3 bg-gold text-white rounded hover:bg-gold-dark transition-colors" onclick="goToOrders()">
+                        查看订单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 支付成功弹窗结束 -->
+</body>
+</html>

@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵豆APP - 智能养宠</title>
+    <style>
+        @font-face {
+            font-family: 'Alibaba PuHuiTi';
+            src: url('../fonts/AlibabaPuHuiTi-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-display: swap;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Source Han Sans CN Heavy', 'Noto Sans SC Black', '思源黑体 Heavy', 'Microsoft YaHei', sans-serif;
+            font-weight: 900;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        /* 手机外壳 */
+        .phone-frame {
+            width: 380px;
+            height: 780px;
+            background: #000;
+            border-radius: 48px;
+            padding: 14px;
+            box-shadow:
+                0 0 0 3px #2a2a2a,
+                0 0 0 6px #1a1a1a,
+                0 25px 50px rgba(0,0,0,0.5),
+                inset 0 0 20px rgba(255,255,255,0.1);
+            position: relative;
+        }
+        /* 刘海区域 */
+        .phone-notch {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 32px;
+            background: #000;
+            border-radius: 0 0 18px 18px;
+            z-index: 100;
+        }
+        /* 屏幕 */
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 38px;
+            overflow: hidden;
+            position: relative;
+            background: #ffffff;
+        }
+        /* 页面通用样式 */
+        .page {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #ffffff;
+            color: #333333;
+        }
+        .page::-webkit-scrollbar {
+            width: 0;
+        }
+        .chat-messages::-webkit-scrollbar {
+            width: 2px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.03);
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 1px;
+        }
+        .chat-messages:hover::-webkit-scrollbar {
+            opacity: 1;
+        }
+        .page.active {
+            display: block;
+        }
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%);
+        }
+        .gradient-bg-soft {
+            background: #f8f9fa;
+        }
+        /* 顶部标题 */
+        .page-header-bar {
+            padding: 40px 20px 20px;
+        }
+        .page-title-bar {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .page-subtitle-bar {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+        }
+        /* 卡片 */
+        .glass-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin: 0 16px 16px;
+            padding: 16px;
+        }
+        /* 底部导航 */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 80px;
+            background: #ffffff;
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eeeeee;
+            border-radius: 0 0 38px 38px;
+            z-index: 50;
+            overflow: hidden;
+            padding: 0 15px;
+        }
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            width: 18%;
+        }
+        .nav-btn.active .nav-icon-box {
+            background: #2563eb;
+            box-shadow: 0 4px 15px rgba(255,122,69,0.25);
+        }
+        .nav-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: #f0f0f0;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        .nav-label {
+            font-size: 10px;
+            color: #666666;
+        }
+        .nav-btn.active .nav-label {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        /* ========== 首页样式 ========== */
+        .home-header {
+            padding: 65px 20px 30px;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            border-radius: 0 0 30px 30px;
+        }
+        .greeting {
+            font-size: 15px;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 4px;
+        }
+        .user-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .pet-quick-card {
+            margin: -50px 16px 20px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 10px 40px rgba(255,107,53,0.2);
+        }
+        .pet-avatar-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #FFE4D6, #FFD4C4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 15px rgba(255,107,53,0.2);
+        }
+        .pet-info-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .pet-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            color: #4CAF50;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-dot-pulse {
+            width: 6px;
+            height: 6px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: pulse-g 1.5s infinite;
+        }
+        @keyframes pulse-g {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+        .view-arrow {
+            margin-left: auto;
+            color: #2563eb;
+            font-size: 20px;
+        }
+        /* 健康分 */
+        .health-score-card {
+            margin: 0 16px 16px;
+            background: #f8f9fa;
+            border-radius: 24px;
+            padding: 24px;
+            border: none;
+            box-shadow: none;
+        }
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .score-circle-large {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 700;
+            color: #333333;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+        .score-info h4 {
+            font-size: 15px;
+            color: #333333;
+            font-weight: 600;
+        }
+        .score-info p {
+            font-size: 12px;
+            color: #4CAF50;
+            margin-top: 2px;
+        }
+        .score-trend {
+            background: rgba(76,175,80,0.15);
+            color: #4CAF50;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .stat-box {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .stat-label-sm {
+            font-size: 11px;
+            color: #666666;
+            margin-top: 4px;
+        }
+        /* 功能网格 */
+        .func-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 0 16px;
+            margin-bottom: 20px;
+        }
+        .func-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .func-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: #f0f0f0;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
+        .func-item:active .func-icon {
+            transform: scale(0.95);
+        }
+        .func-text {
+            font-size: 11px;
+            color: #666666;
+        }
+        /* 动态列表 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            margin-bottom: 12px;
+        }
+        .section-title-sm {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .see-all {
+            font-size: 12px;
+            color: #2563eb;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 0 16px 12px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .activity-icon-sm {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: #f0f0f0;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .activity-content {
+            flex: 1;
+        }
+        .activity-title-sm {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 2px;
+        }
+        .activity-desc-sm {
+            font-size: 12px;
+            color: #666666;
+        }
+        .activity-arrow-sm {
+            color: #cccccc;
+            font-size: 18px;
+        }
+        /* ========== 摄像头页面 ========== */
+        .camera-view {
+            position: relative;
+            height: 260px;
+            background: #000;
+            overflow: hidden;
+        }
+        .camera-video-element {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .camera-overlay-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.6) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+        }
+        .cam-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .live-badge-cam {
+            background: rgba(255,68,68,0.9);
+            color: #333333;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .live-dot-cam {
+            width: 5px;
+            height: 5px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink-c 1s infinite;
+        }
+        @keyframes blink-c {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .cam-quality {
+            background: rgba(255,255,255,0.2);
+            color: #333333;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+        }
+        .cam-status-bar {
+            background: rgba(0,0,0,0.6);
+            color: #333333;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 13px;
+            text-align: center;
+            align-self: center;
+        }
+        .cam-controls-row {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+        .cam-control-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #333333;
+        }
+        .camera-data-panel {
+            margin: 16px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .panel-title-sm {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 16px;
+        }
+        .data-row-cam {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .data-item-cam {
+            text-align: center;
+            padding: 12px 8px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .data-val-cam {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .data-label-cam {
+            font-size: 11px;
+            color: #666666;
+            margin-top: 4px;
+        }
+        .quick-actions-cam {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 0 16px;
+        }
+        .quick-act-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .quick-act-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255,107,53,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .quick-act-label {
+            font-size: 10px;
+            color: #666666;
+        }
+        /* ========== 健康报告页面 ========== */
+        .report-card-full {
+            margin: 0 16px 16px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .report-head-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .report-icon-lg {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+        .report-meta h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .report-meta p {
+            font-size: 12px;
+            color: #666666;
+            margin-top: 2px;
+        }
+        .score-ring-center {
+            text-align: center;
+            padding: 30px 0;
+        }
+        .ring-svg {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        .ring-svg svg {
+            transform: rotate(-90deg);
+        }
+        .ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 10;
+        }
+        .ring-progress {
+            fill: none;
+            stroke: url(#orangeGradient);
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 66;
+        }
+        .ring-text-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .ring-score-num {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2563eb;
+            line-height: 1;
+        }
+        .ring-score-unit {
+            font-size: 14px;
+            color: #666666;
+        }
+        .health-status-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(76,175,80,0.1));
+            color: #4CAF50;
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .report-detail-list {
+            margin-top: 24px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-name {
+            font-size: 14px;
+            color: #666666;
+        }
+        .detail-val {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .detail-val.good { color: #4CAF50; }
+        .detail-val.warn { color: #FF9800; }
+        .detail-val.bad { color: #FF5252; }
+        .send-report-btn {
+            margin: 20px 16px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            color: #333333;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 25px rgba(255,107,53,0.4);
+        }
+        /* ========== 医院页面 ========== */
+        .current-report-box {
+            margin: 16px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .report-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .report-row-mini {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .report-row-mini:last-child {
+            border-bottom: none;
+        }
+        .report-label-mini {
+            font-size: 13px;
+            color: #666666;
+        }
+        .report-value-mini {
+            font-size: 13px;
+            color: #333333;
+        }
+        .attach-btn-mini {
+            margin-top: 14px;
+            background: rgba(255,107,53,0.15);
+            border: 1px solid rgba(255,107,53,0.3);
+            border-radius: 12px;
+            padding: 12px;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+        }
+        .hospital-list-sec {
+            padding: 0 16px;
+        }
+        .hospital-card-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 16px;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .hosp-img-box {
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2a2a3e, #1a1a2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        .hosp-details {
+            flex: 1;
+        }
+        .hosp-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 6px;
+        }
+        .hosp-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #FFB800;
+            margin-bottom: 6px;
+        }
+        .hosp-distance {
+            font-size: 12px;
+            color: #666666;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .hosp-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .hosp-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+        }
+        .hosp-btn-primary {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #333333;
+            border: none;
+        }
+        .hosp-btn-outline {
+            background: transparent;
+            border: 1px solid #cccccc;
+            color: #333333;
+        }
+        /* ========== 超市页面 ========== */
+        .shop-search-bar {
+            margin: 16px;
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666666;
+            font-size: 14px;
+        }
+        .shop-cats-scroll {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+        .shop-cats-scroll::-webkit-scrollbar {
+            height: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .shop-cats-scroll::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 2px;
+        }
+        .shop-cats-scroll::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 2px;
+        }
+        .shop-cats-scroll:hover::-webkit-scrollbar {
+            opacity: 1;
+        }
+        .shop-cat-pill {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .shop-cat-pill.active .cat-pill-icon {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+        }
+        .shop-cat-pill.active .cat-pill-text {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .cat-pill-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+        .cat-pill-text {
+            font-size: 11px;
+            color: #666666;
+        }
+        .product-grid-sec {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 16px 20px;
+        }
+        .product-card-sec {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .prod-img-box {
+            height: 110px;
+            background: linear-gradient(135deg, #1e1e30, #252540);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+        }
+        .prod-info-box {
+            padding: 12px;
+        }
+        .prod-name-sec {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+            height: 36px;
+        }
+        .prod-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        .prod-price-now {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .prod-price-ori {
+            font-size: 11px;
+            color: #999999;
+            text-decoration: line-through;
+        }
+        .prod-sales-sec {
+            font-size: 10px;
+            color: #999999;
+            margin-top: 4px;
+        }
+        /* ========== 会员页面 ========== */
+        .member-card-full {
+            margin: 16px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 24px;
+            padding: 24px;
+            color: #333333;
+        }
+        .member-head-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .member-avatar-lg {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        .member-name-lg {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .member-level-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+        .member-stats-row {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .member-stat-item {
+            text-align: center;
+        }
+        .member-stat-num {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .member-stat-lbl {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        .menu-list-sec {
+            padding: 0 16px;
+        }
+        .menu-item-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: #ffffff;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .menu-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(247,147,30,0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .menu-text-main {
+            flex: 1;
+            font-size: 14px;
+            color: #333333;
+        }
+        .menu-arrow-right {
+            color: #cccccc;
+        }
+        .exchange-section {
+            margin: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .exchange-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 14px;
+        }
+        .exchange-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            margin-bottom: 10px;
+        }
+        .exchange-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2a2a3e, #1a1a2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .exchange-info {
+            flex: 1;
+        }
+        .exchange-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 2px;
+        }
+        .exchange-price {
+            font-size: 13px;
+            color: #2563eb;
+            font-weight: 700;
+        }
+        .exchange-btn {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        /* ========== 社区页面 ========== */
+        .tip-card-highlight {
+            margin: 16px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(59, 130, 246, 0.05));
+            border-radius: 18px;
+            padding: 16px;
+            border-left: 3px solid #2563eb;
+        }
+        .tip-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .tip-official-badge {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .tip-source {
+            font-size: 11px;
+            color: #666666;
+        }
+        .tip-title-high {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+        .tip-content-high {
+            font-size: 13px;
+            color: #666666;
+            line-height: 1.5;
+        }
+        .post-card-sec {
+            margin: 0 16px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .post-user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .post-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2a2a3e, #1a1a2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .post-user-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .post-user-info p {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+        }
+        .post-text-content {
+            font-size: 14px;
+            color: #333333;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .post-imgs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .post-img-cell {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2a2a3e, #1a1a2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+        .post-actions-row {
+            display: flex;
+            gap: 20px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .post-action-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 16px;
+            color: #666666;
+            cursor: pointer;
+        }
+        /* 评论区 */
+        .comment-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .comment-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .comment-input {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 8px 14px;
+            color: #333333;
+            font-size: 13px;
+            outline: none;
+        }
+        .comment-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+        .comment-submit {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: #333333;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .comment-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .comment-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .comment-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .comment-content {
+            flex: 1;
+        }
+        .comment-user {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .comment-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 2px;
+        }
+        .comment-time {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 2px;
+        }
+        .action-row-new {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .action-left {
+            display: flex;
+            gap: 16px;
+        }
+        }
+        .post-action-item.liked {
+            color: #2563eb;
+        }
+        .publish-btn-fixed {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #333333;
+            box-shadow: 0 6px 20px rgba(255,107,53,0.5);
+            cursor: pointer;
+            z-index: 40;
+        }
+        /* ========== 档案页面 ========== */
+        .profile-header-sec {
+            padding: 40px 20px 30px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            text-align: center;
+        }
+        .profile-avatar-xl {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #fff;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .profile-name-xl {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .profile-breed-xl {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 4px;
+        }
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 16px;
+            margin-top: -30px;
+        }
+        .profile-stat-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 14px 6px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .profile-stat-num-lg {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .profile-stat-lbl-lg {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 2px;
+        }
+        .profile-info-card {
+            margin: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .profile-info-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .profile-info-item label {
+            display: block;
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 4px;
+        }
+        .profile-info-item span {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 500;
+        }
+        .ai-func-card {
+            margin: 16px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 20px;
+            padding: 20px;
+        }
+        .ai-func-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .ai-func-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .ai-func-title h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #333333;
+        }
+        .ai-func-title p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+        .ai-func-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .ai-func-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .ai-func-item:active {
+            background: rgba(255,255,255,0.25);
+            transform: scale(0.98);
+        }
+        .ai-func-item-icon {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+        .ai-func-item-text {
+            font-size: 12px;
+            color: #333333;
+        }
+        .edit-profile-btn {
+            margin: 16px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            padding: 14px;
+            color: #333333;
+            font-size: 14px;
+            font-weight: 600;
+            width: calc(100% - 32px);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+
+            <!-- 定义渐变 -->
+            <svg width="0" height="0">
+                <defs>
+                    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#2563eb"/>
+                        <stop offset="100%" style="stop-color:#3b82f6"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <!-- 首页 -->
+            <div class="page active" id="page-home">
+                <div class="home-header">
+                </div>
+
+                <div class="pet-quick-card">
+                    <div class="pet-avatar-box">🐱</div>
+                    <div class="pet-info-box">
+                        <h3>小橘</h3>
+                        <span class="pet-status-badge">
+                            <span class="status-dot-pulse"></span>
+                            正在如厕中
+                        </span>
+                    </div>
+                    <span class="view-arrow">›</span>
+                </div>
+
+                <div class="health-score-card">
+                    <div class="score-header">
+                        <div class="score-display">
+                            <div class="score-circle-large">92</div>
+                            <div class="score-info">
+                                <h4>健康评分</h4>
+                                <p>较昨日 +2 分</p>
+                            </div>
+                        </div>
+                        <span class="score-trend">优秀</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-num">5</div>
+                            <div class="stat-label-sm">今日如厕</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">12<span style="font-size:12px">min</span></div>
+                            <div class="stat-label-sm">平均时长</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">正常</div>
+                            <div class="stat-label-sm">排泄状态</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="func-grid">
+                    <div class="func-item" onclick="switchPage('page-camera')">
+                        <div class="func-icon">📹</div>
+                        <span class="func-text">实时监控</span>
+                    </div>
+                    <div class="func-item" onclick="switchPage('page-report')">
+                        <div class="func-icon">📊</div>
+                        <span class="func-text">健康报告</span>
+                    </div>
+                    <div class="func-item" onclick="switchPage('page-hospital')">
+                        <div class="func-icon">🏥</div>
+                        <span class="func-text">线上诊疗</span>
+                    </div>
+                    <div class="func-item" onclick="switchPage('page-shop')">
+                        <div class="func-icon">🛒</div>
+                        <span class="func-text">宠物超市</span>
+                    </div>
+                    <div class="func-item" onclick="switchPage('page-member')">
+                        <div class="func-icon">👑</div>
+                        <span class="func-text">会员中心</span>
+                    </div>
+                    <div class="func-item" onclick="switchPage('page-community')">
+                        <div class="func-icon">💬</div>
+                        <span class="func-text">喵豆社区</span>
+                    </div>
+                    <div class="func-item" onclick="switchPage('page-profile')">
+                        <div class="func-icon">📋</div>
+                        <span class="func-text">宠物档案</span>
+                    </div>
+                    <div class="func-item">
+                        <div class="func-icon">🎁</div>
+                        <span class="func-text">更多</span>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <span class="section-title-sm">最近动态</span>
+                    <span class="see-all">查看全部</span>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon-sm">✅</div>
+                    <div class="activity-content">
+                        <div class="activity-title-sm">健康报告已生成</div>
+                        <div class="activity-desc-sm">小橘排泄物分析结果：正常</div>
+                    </div>
+                    <span class="activity-arrow-sm">›</span>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon-sm">📦</div>
+                    <div class="activity-content">
+                        <div class="activity-title-sm">猫垫即将用完</div>
+                        <div class="activity-desc-sm">剩余量约15%，建议及时补充</div>
+                    </div>
+                    <span class="activity-arrow-sm">›</span>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 摄像头页面 -->
+            <div class="page" id="page-camera">
+                <div class="camera-view">
+                    <video class="camera-video-element" autoplay muted loop playsinline>
+                        <source src="images/healing-video.mp4" type="video/mp4">
+                    </video>
+                    <div class="camera-overlay-layer">
+                        <div class="cam-top-bar">
+                            <div class="live-badge-cam">
+                                <span class="live-dot-cam"></span>
+                                LIVE
+                            </div>
+                            <div class="cam-quality">1080P</div>
+                        </div>
+                        <div class="cam-status-bar" style="display:none;">🐱 小橘正在使用中...</div>
+                        <div class="cam-controls-row">
+                            <div class="cam-control-btn">🔊</div>
+                            <div class="cam-control-btn">📷</div>
+                            <div class="cam-control-btn">⛶</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="camera-data-panel">
+                    <div class="panel-title-sm">实时数据</div>
+                    <div class="data-row-cam">
+                        <div class="data-item-cam">
+                            <div class="data-val-cam">3次</div>
+                            <div class="data-label-cam">今日如厕</div>
+                        </div>
+                        <div class="data-item-cam">
+                            <div class="data-val-cam">45%</div>
+                            <div class="data-label-cam">环境湿度</div>
+                        </div>
+                        <div class="data-item-cam">
+                            <div class="data-val-cam">使用中</div>
+                            <div class="data-label-cam">如厕状态</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions-cam">
+                    <div class="quick-act-btn">
+                        <div class="quick-act-icon">🔦</div>
+                        <span class="quick-act-label">夜视</span>
+                    </div>
+                    <div class="quick-act-btn">
+                        <div class="quick-act-icon">📹</div>
+                        <span class="quick-act-label">回放</span>
+                    </div>
+                    <div class="quick-act-btn">
+                        <div class="quick-act-icon">⚙️</div>
+                        <span class="quick-act-label">设置</span>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 健康报告页面 -->
+            <div class="page" id="page-report">
+                <div class="page-header-bar gradient-bg">
+                    <div class="page-title-bar">健康报告</div>
+                    <div class="page-subtitle-bar">小橘的排泄物分析报告</div>
+                </div>
+
+                <div class="report-card-full">
+                    <div class="report-head-row">
+                        <div class="report-icon-lg">💩</div>
+                        <div class="report-meta">
+                            <h3>排泄物分析</h3>
+                            <p>2024年1月15日 14:30</p>
+                        </div>
+                    </div>
+
+                    <div class="score-ring-center">
+                        <div class="ring-svg">
+                            <svg width="160" height="160">
+                                <circle class="ring-bg" cx="80" cy="80" r="70"/>
+                                <circle class="ring-progress" cx="80" cy="80" r="70"/>
+                            </svg>
+                            <div class="ring-text-center">
+                                <div class="ring-score-num">85</div>
+                                <div class="ring-score-unit">分</div>
+                            </div>
+                        </div>
+                        <span class="health-status-badge">状态良好</span>
+                    </div>
+
+                    <div class="report-detail-list">
+                        <div class="detail-row">
+                            <span class="detail-name">形态评估</span>
+                            <span class="detail-val good">正常 (4级)</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-name">颜色状态</span>
+                            <span class="detail-val good">正常</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-name">湿度评估</span>
+                            <span class="detail-val good">适中</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-name">气味等级</span>
+                            <span class="detail-val good">轻微</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-name">AI建议</span>
+                            <span class="detail-val" style="color: #2563eb;">继续保持良好饮食</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="send-report-btn" onclick="switchPage('page-chat')">
+                    📤 发送给宠物医院
+                </button>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 线上诊疗页面 -->
+            <div class="page" id="page-hospital">
+                <div class="page-header-bar gradient-bg">
+                    <div class="page-title-bar">线上诊疗</div>
+                    <div class="page-subtitle-bar">发送健康报告，获取专业建议</div>
+                </div>
+
+                <div class="current-report-box">
+                    <div class="report-box-title">📋 当前健康报告</div>
+                    <div class="report-row-mini">
+                        <span class="report-label-mini">宠物</span>
+                        <span class="report-value-mini">小橘</span>
+                    </div>
+                    <div class="report-row-mini">
+                        <span class="report-label-mini">健康评分</span>
+                        <span class="report-value-mini" style="color: #4CAF50;">85分</span>
+                    </div>
+                    <div class="report-row-mini">
+                        <span class="report-label-mini">排泄状态</span>
+                        <span class="report-value-mini" style="color: #4CAF50;">正常</span>
+                    </div>
+                    <div class="attach-btn-mini">📎 附加健康报告</div>
+                </div>
+
+                <div class="hospital-list-sec">
+                    <div class="section-header">
+                        <span class="section-title-sm">附近合作医院</span>
+                    </div>
+
+                    <div class="hospital-card-item">
+                        <div class="hosp-img-box">🏥</div>
+                        <div class="hosp-details">
+                            <div class="hosp-name">萌爪宠物医院</div>
+                            <div class="hosp-rating">⭐⭐⭐⭐⭐ 4.9</div>
+                            <div class="hosp-distance">📍 距您1.2km</div>
+                            <div class="hosp-actions">
+                                <div class="hosp-btn hosp-btn-primary">📤 发送报告</div>
+                                <div class="hosp-btn hosp-btn-outline">📞 预约</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hospital-card-item">
+                        <div class="hosp-img-box">🐕</div>
+                        <div class="hosp-details">
+                            <div class="hosp-name">爱宠之家诊所</div>
+                            <div class="hosp-rating">⭐⭐⭐⭐ 4.7</div>
+                            <div class="hosp-distance">📍 距您2.5km</div>
+                            <div class="hosp-actions">
+                                <div class="hosp-btn hosp-btn-primary">📤 发送报告</div>
+                                <div class="hosp-btn hosp-btn-outline">📞 预约</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hospital-card-item">
+                        <div class="hosp-img-box">🐱</div>
+                        <div class="hosp-details">
+                            <div class="hosp-name">喵星人专科医院</div>
+                            <div class="hosp-rating">⭐⭐⭐⭐⭐ 4.9</div>
+                            <div class="hosp-distance">📍 距您3.1km</div>
+                            <div class="hosp-actions">
+                                <div class="hosp-btn hosp-btn-primary">📤 发送报告</div>
+                                <div class="hosp-btn hosp-btn-outline">📞 预约</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 宠物医院咨询聊天页面 -->
+            <div class="page" id="page-chat">
+                <div class="page-header-bar gradient-bg" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #1a4cd8, #2563eb);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px; cursor: pointer; color: #fff;" onclick="switchPage('page-hospital')">‹</span>
+                        <div>
+                            <div class="page-title-bar" style="color: #fff; font-weight: bold;">萌爪宠物医院</div>
+                            <div class="page-subtitle-bar" style="color: rgba(255,255,255,0.8); font-size: 12px;">在线问诊中...</div>
+                        </div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.25); padding: 6px 12px; border-radius: 20px; font-size: 12px; color: #fff;">📞 电话咨询</div>
+                </div>
+
+                <div style="padding: 16px;">
+                    <!-- 发送的健康报告 -->
+                    <div class="glass-card" style="margin: 0 0 16px 0; background: linear-gradient(135deg, #e8f4ff, #d6ecff); border: 1px solid #b8daff;">
+                        <div style="font-size: 13px; color: #1a4cd8; margin-bottom: 10px; font-weight: bold;">📋 已发送健康报告</div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                            <span style="font-size: 12px; color: #666;">健康评分</span>
+                            <span style="font-size: 12px; color: #2d8a2d; font-weight: bold;">85分</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                            <span style="font-size: 12px; color: #666;">排泄状态</span>
+                            <span style="font-size: 12px; color: #2d8a2d; font-weight: bold;">正常</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span style="font-size: 12px; color: #666;">形态评估</span>
+                            <span style="font-size: 12px; color: #2d8a2d; font-weight: bold;">正常 (4级)</span>
+                        </div>
+                    </div>
+
+                    <!-- 聊天消息 -->
+                    <div class="chat-messages" id="chatMessages" style="max-height: 400px; overflow-y: auto; margin-bottom: 16px;">
+                        <!-- 医生消息 -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👨‍⚕️</div>
+                            <div style="background: #f0f0f0; border-radius: 18px 18px 18px 4px; padding: 12px 16px; max-width: 75%;">
+                                <div style="font-size: 14px; color: #333333; line-height: 1.5;">您好！我是萌爪宠物医院的张医生</div>
+                            </div>
+                        </div>
+
+                        <!-- 用户消息 -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-direction: row-reverse;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👤</div>
+                            <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 18px 4px 18px 18px; padding: 12px 16px; max-width: 75%;">
+                                <div style="font-size: 14px; color: #ffffff; line-height: 1.5;">医生你好，我给小橘做了健康检测，显示排泄物分析正常，但我还是有些担心</div>
+                            </div>
+                        </div>
+
+                        <!-- 医生消息 -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👨‍⚕️</div>
+                            <div style="background: #f0f0f0; border-radius: 18px 18px 18px 4px; padding: 12px 16px; max-width: 75%;">
+                                <div style="font-size: 14px; color: #333333; line-height: 1.5;">理解您的担心！从报告来看，小橘的排泄物各项指标都在正常范围内，形态、颜色、湿度都很健康</div>
+                            </div>
+                        </div>
+
+                        <!-- 医生消息 -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👨‍⚕️</div>
+                            <div style="background: #f0f0f0; border-radius: 18px 18px 18px 4px; padding: 12px 16px; max-width: 75%;">
+                                <div style="font-size: 14px; color: #333333; line-height: 1.5;">请问小橘最近食欲怎么样？喝水多吗？有没有呕吐或精神不振的情况？</div>
+                            </div>
+                        </div>
+
+                        <!-- 用户消息 -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-direction: row-reverse;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👤</div>
+                            <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 18px 4px 18px 18px; padding: 12px 16px; max-width: 75%;">
+                                <div style="font-size: 14px; color: #ffffff; line-height: 1.5;">食欲挺正常的，喝水也还行，精神也挺好的</div>
+                            </div>
+                        </div>
+
+                        <!-- 医生消息 -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👨‍⚕️</div>
+                            <div style="background: #f0f0f0; border-radius: 18px 18px 18px 4px; padding: 12px 16px; max-width: 75%;">
+                                <div style="font-size: 14px; color: #333333; line-height: 1.5;">那就没问题！小橘的健康状况良好，继续保持现在的喂养习惯就可以了。如果后续有任何异常，随时可以找我咨询</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快捷输入 -->
+                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 12px;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 20px; font-size: 12px; color: rgba(255,255,255,0.8); white-space: nowrap; cursor: pointer;">食欲不振怎么办</div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 20px; font-size: 12px; color: rgba(255,255,255,0.8); white-space: nowrap; cursor: pointer;">需要驱虫吗</div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 20px; font-size: 12px; color: rgba(255,255,255,0.8); white-space: nowrap; cursor: pointer;">如何改善软便</div>
+                    </div>
+
+                    <!-- 输入框 -->
+                    <div style="display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.08); border-radius: 24px; padding: 8px 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <span style="font-size: 20px;">📷</span>
+                        <input type="text" placeholder="输入问题..." style="flex: 1; background: transparent; border: none; color: #333333; font-size: 14px; outline: none;">
+                        <span style="font-size: 20px;">😊</span>
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center;">➤</div>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 超市页面 -->
+            <div class="page" id="page-shop">
+                <div class="page-header-bar gradient-bg" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="page-title-bar">喵豆超市</div>
+                    <div style="position: relative; cursor: pointer;" onclick="switchPage('page-cart')">
+                        <span style="font-size: 22px;">🛒</span>
+                        <span id="cart-count" style="position: absolute; top: -5px; right: -8px; background: #ff6b6b; color: #fff; font-size: 10px; padding: 2px 5px; border-radius: 10px; display: none;">0</span>
+                    </div>
+                </div>
+
+                <div class="shop-search-bar">
+                    🔍 搜索商品、品牌...
+                </div>
+
+                <div class="shop-cats-scroll">
+                    <div class="shop-cat-pill active">
+                        <div class="cat-pill-icon">🥣</div>
+                        <span class="cat-pill-text">猫粮</span>
+                    </div>
+                    <div class="shop-cat-pill">
+                        <div class="cat-pill-icon">🧸</div>
+                        <span class="cat-pill-text">玩具</span>
+                    </div>
+                    <div class="shop-cat-pill">
+                        <div class="cat-pill-icon">💊</div>
+                        <span class="cat-pill-text">药品</span>
+                    </div>
+                    <div class="shop-cat-pill">
+                        <div class="cat-pill-icon">🧴</div>
+                        <span class="cat-pill-text">护理</span>
+                    </div>
+                    <div class="shop-cat-pill">
+                        <div class="cat-pill-icon">🏠</div>
+                        <span class="cat-pill-text">用品</span>
+                    </div>
+                    <div class="shop-cat-pill">
+                        <div class="cat-pill-icon">📦</div>
+                        <span class="cat-pill-text">耗材</span>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <span class="section-title-sm">热门推荐</span>
+                </div>
+
+                <div class="product-grid-sec">
+                    <!-- 猫粮分类 -->
+                    <div class="product-card-sec" data-category="猫粮">
+                        <div class="prod-img-box">🥣</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">天然无谷猫粮 5kg</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥268</span>
+                                <span class="prod-price-ori">¥328</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 1000+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('天然无谷猫粮 5kg', 268, '🥣')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="猫粮">
+                        <div class="prod-img-box">🥣</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">冻干生骨肉猫粮 2kg</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥198</span>
+                                <span class="prod-price-ori">¥258</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 800+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('冻干生骨肉猫粮 2kg', 198, '🥣')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="猫粮">
+                        <div class="prod-img-box">🥣</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">幼猫专用奶糕粮 1.5kg</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥128</span>
+                                <span class="prod-price-ori">¥168</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 600+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('幼猫专用奶糕粮 1.5kg', 128, '🥣')">加入购物车</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 玩具分类 -->
+                    <div class="product-card-sec" data-category="玩具">
+                        <div class="prod-img-box">🧸</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪电动逗猫棒</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥89</span>
+                                <span class="prod-price-ori">¥129</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 500+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪电动逗猫棒', 89, '🧸')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="玩具">
+                        <div class="prod-img-box">🧸</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫薄荷鱼抱枕</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥39</span>
+                                <span class="prod-price-ori">¥59</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 1200+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫爬架', 159, '🧸')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="玩具">
+                        <div class="prod-img-box">🧸</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">激光逗猫笔</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥29</span>
+                                <span class="prod-price-ori">¥49</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 900+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('激光逗猫笔', 29, '🧸')">加入购物车</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 药品分类 -->
+                    <div class="product-card-sec" data-category="药品">
+                        <div class="prod-img-box" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); display: flex; align-items: center; justify-content: center; font-size: 40px;">🪱</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪驱虫药套餐</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥59</span>
+                                <span class="prod-price-ori">¥89</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 800+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪驱虫药套餐', 59, '🪱')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="药品">
+                        <div class="prod-img-box" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); display: flex; align-items: center; justify-content: center; font-size: 40px;">🧴</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪化毛膏 120g</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥49</span>
+                                <span class="prod-price-ori">¥79</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 1500+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪化毛膏 120g', 49, '🧴')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="药品">
+                        <div class="prod-img-box" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); display: flex; align-items: center; justify-content: center; font-size: 40px;">💊</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪益生菌 10袋</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥39</span>
+                                <span class="prod-price-ori">¥59</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 700+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪益生菌 10袋', 39, '💊')">加入购物车</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 护理分类 -->
+                    <div class="product-card-sec" data-category="护理">
+                        <div class="prod-img-box">🧴</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪专用沐浴露 500ml</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥69</span>
+                                <span class="prod-price-ori">¥99</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 600+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪专用沐浴露 500ml', 69, '🧴')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="护理">
+                        <div class="prod-img-box">🧴</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪指甲剪套装</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥29</span>
+                                <span class="prod-price-ori">¥49</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 1100+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪指甲剪套装', 29, '🧴')">加入购物车</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 用品分类 -->
+                    <div class="product-card-sec" data-category="用品">
+                        <div class="prod-img-box">🏠</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">半封闭猫砂盆</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥129</span>
+                                <span class="prod-price-ori">¥169</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 400+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('半封闭猫砂盆', 129, '🏠')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="用品">
+                        <div class="prod-img-box">🏠</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">猫咪航空箱</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥159</span>
+                                <span class="prod-price-ori">¥199</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 300+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('猫咪航空箱', 159, '🏠')">加入购物车</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 耗材分类 -->
+                    <div class="product-card-sec" data-category="耗材">
+                        <div class="prod-img-box">📦</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">meodou猫垫 1卷</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥39.9</span>
+                                <span class="prod-price-ori">¥59.9</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 2000+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('meodou猫垫 1卷', 39.9, '📦')">加入购物车</span></div>
+                        </div>
+                    </div>
+                    <div class="product-card-sec" data-category="耗材">
+                        <div class="prod-img-box">📦</div>
+                        <div class="prod-info-box">
+                            <div class="prod-name-sec">meodou猫垫 3卷优惠装</div>
+                            <div class="prod-price-row">
+                                <span class="prod-price-now">¥99.9</span>
+                                <span class="prod-price-ori">¥179.7</span>
+                            </div>
+                            <div class="prod-sales-sec">月销 1500+</div>
+                            <div style="margin-top: 8px;"><span style="background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer;" onclick="addToCart('meodou猫垫 3卷优惠装', 99.9, '📦')">加入购物车</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 购物车页面 -->
+            <div class="page" id="page-cart">
+                <div class="page-header-bar gradient-bg" style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 24px; cursor: pointer; color: #fff;" onclick="switchPage('page-shop')">‹</span>
+                    <div class="page-title-bar" style="color: #fff;">购物车</div>
+                </div>
+                <div style="padding: 15px;" id="cart-items">
+                    <div style="text-align: center; padding: 60px 20px; color: #999;">🛒 购物车是空的</div>
+                </div>
+                <div style="position: fixed; bottom: 90px; left: 0; right: 0; background: #fff; padding: 15px 20px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>合计: <span id="cart-total" style="font-size: 20px; color: #ff6b35; font-weight: bold;">¥0</span></div>
+                        <div style="background: linear-gradient(135deg, #ff6b35, #ff8f5a); color: #fff; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer;" onclick="showToast('请添加商品到购物车')">结算</div>
+                    </div>
+                </div>
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 会员页面 -->
+            <div class="page" id="page-member">
+                <div class="page-header-bar gradient-bg">
+                    <div class="page-title-bar">会员中心</div>
+                </div>
+
+                <div class="member-card-full">
+                    <div class="member-head-row">
+                        <div class="member-avatar-lg">👤</div>
+                        <div>
+                            <div class="member-name-lg">铲屎官小王</div>
+                            <span class="member-level-badge">黄金会员</span>
+                        </div>
+                    </div>
+                    <div class="member-stats-row">
+                        <div class="member-stat-item">
+                            <div class="member-stat-num">2,580</div>
+                            <div class="member-stat-lbl">当前积分</div>
+                        </div>
+                        <div class="member-stat-item">
+                            <div class="member-stat-num">3,200</div>
+                            <div class="member-stat-lbl">累计积分</div>
+                        </div>
+                        <div class="member-stat-item">
+                            <div class="member-stat-num">Lv.4</div>
+                            <div class="member-stat-lbl">会员等级</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-list-sec">
+                    <div class="menu-item-row">
+                        <div class="menu-icon-box">🎁</div>
+                        <span class="menu-text-main">积分换购</span>
+                        <span class="menu-arrow-right">›</span>
+                    </div>
+                    <div class="menu-item-row">
+                        <div class="menu-icon-box">🎫</div>
+                        <span class="menu-text-main">优惠券</span>
+                        <span class="menu-arrow-right">›</span>
+                    </div>
+                    <div class="menu-item-row">
+                        <div class="menu-icon-box">📦</div>
+                        <span class="menu-text-main">我的订单</span>
+                        <span class="menu-arrow-right">›</span>
+                    </div>
+                    <div class="menu-item-row">
+                        <div class="menu-icon-box">❤️</div>
+                        <span class="menu-text-main">我的收藏</span>
+                        <span class="menu-arrow-right">›</span>
+                    </div>
+                    <div class="menu-item-row">
+                        <div class="menu-icon-box">⚙️</div>
+                        <span class="menu-text-main">设置</span>
+                        <span class="menu-arrow-right">›</span>
+                    </div>
+                </div>
+
+                <div class="exchange-section">
+                    <div class="exchange-title">🎁 积分换购</div>
+                    <div class="exchange-item">
+                        <div class="exchange-img">📦</div>
+                        <div class="exchange-info">
+                            <div class="exchange-name">meodou猫垫 1卷</div>
+                            <div class="exchange-price">500 积分 + ¥49</div>
+                        </div>
+                        <button class="exchange-btn">换购</button>
+                    </div>
+                    <div class="exchange-item">
+                        <div class="exchange-img">🥣</div>
+                        <div class="exchange-info">
+                            <div class="exchange-name">天然猫粮 1kg</div>
+                            <div class="exchange-price">300 积分 + ¥79</div>
+                        </div>
+                        <button class="exchange-btn">换购</button>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 社区页面 -->
+            <div class="page" id="page-community">
+                <div class="page-header-bar gradient-bg">
+                    <div class="page-title-bar">喵豆社区</div>
+                </div>
+
+                <div class="tip-card-highlight">
+                    <div class="tip-badge-row">
+                        <span class="tip-official-badge">养宠贴士</span>
+                        <span class="tip-source">官方发布</span>
+                    </div>
+                    <div class="tip-title-high">🐱 新手养猫必看！猫咪到家第一天该做什么？</div>
+                    <div class="tip-content-high">给猫咪一个安静的空间，准备好食物和水，让它自行熟悉环境。不要急于抱它，让它先适应...</div>
+                </div>
+
+                <div class="post-card-sec">
+                    <div class="post-user-row">
+                        <div class="post-avatar-sm">😺</div>
+                        <div class="post-user-info">
+                            <h4>萌宠达人</h4>
+                            <p>2小时前</p>
+                        </div>
+                    </div>
+                    <div class="post-text-content">今天带小橘去体检，医生说它非常健康！开心感谢meodou智能猫厕所的实时监控，让我随时了解它的状态~</div>
+                    <div class="post-imgs-grid">
+                        <div class="post-img-cell">🐱</div>
+                        <div class="post-img-cell">🏥</div>
+                        <div class="post-img-cell">💖</div>
+                    </div>
+                    <div class="post-actions-row action-row-new">
+                        <div class="action-left">
+                            <div class="post-action-item liked" onclick="toggleLike(this)">❤️ <span class="like-count">128</span></div>
+                            <div class="post-action-item" onclick="toggleComment(this)">💬 <span class="comment-count">23</span></div>
+                        </div>
+                        <div class="post-action-item" onclick="toggleCollect(this)">⭐ 收藏</div>
+                    </div>
+                    <div class="comment-section" style="display: none;">
+                        <div class="comment-input-row">
+                            <input type="text" class="comment-input" placeholder="写评论...">
+                            <button class="comment-submit" onclick="submitComment(this)">发送</button>
+                        </div>
+                        <div class="comment-list">
+                            <div class="comment-item">
+                                <div class="comment-avatar">🐱</div>
+                                <div class="comment-content">
+                                    <div class="comment-user">猫奴一号</div>
+                                    <div class="comment-text">太棒了！我也想给小橘买一个</div>
+                                    <div class="comment-time">1小时前</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar">😸</div>
+                                <div class="comment-content">
+                                    <div class="comment-user">养猫达人</div>
+                                    <div class="comment-text">健康最重要，支持meodou！</div>
+                                    <div class="comment-time">30分钟前</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-card-sec">
+                    <div class="post-user-row">
+                        <div class="post-avatar-sm">🐈</div>
+                        <div class="post-user-info">
+                            <h4>猫咪铲屎官</h4>
+                            <p>5小时前</p>
+                        </div>
+                    </div>
+                    <div class="post-text-content">分享一下我家咪子的新厕所，meodou无砂自净猫厕所真的好用！再也不用天天铲屎了，还有健康分析功能，超级推荐！</div>
+                    <div class="post-imgs-grid">
+                        <div class="post-img-cell">🚽</div>
+                        <div class="post-img-cell">🐈</div>
+                    </div>
+                    <div class="post-actions-row action-row-new">
+                        <div class="action-left">
+                            <div class="post-action-item" onclick="toggleLike(this)">❤️ <span class="like-count">256</span></div>
+                            <div class="post-action-item" onclick="toggleComment(this)">💬 <span class="comment-count">45</span></div>
+                        </div>
+                        <div class="post-action-item" onclick="toggleCollect(this)">⭐ 收藏</div>
+                    </div>
+                    <div class="comment-section" style="display: none;">
+                        <div class="comment-input-row">
+                            <input type="text" class="comment-input" placeholder="写评论...">
+                            <button class="comment-submit" onclick="submitComment(this)">发送</button>
+                        </div>
+                        <div class="comment-list">
+                            <div class="comment-item">
+                                <div class="comment-avatar">🙀</div>
+                                <div class="comment-content">
+                                    <div class="comment-user">新手铲屎官</div>
+                                    <div class="comment-text">求链接！</div>
+                                    <div class="comment-time">2小时前</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="post-action-item liked">❤️ 256</div>
+                        <div class="post-action-item">💬 45</div>
+                        <div class="post-action-item">🔗 分享</div>
+                    </div>
+                </div>
+
+                <div class="tip-card-highlight">
+                    <div class="tip-badge-row">
+                        <span class="tip-official-badge">养宠贴士</span>
+                        <span class="tip-source">资深专家</span>
+                    </div>
+                    <div class="tip-title-high">💡 猫咪掉毛严重怎么办？专家教你几招</div>
+                    <div class="tip-content-high">定期梳毛、补充卵磷脂、保持环境清洁...点击查看完整攻略</div>
+                </div>
+
+                <div class="publish-btn-fixed" onclick="switchPage('page-publish')">➕</div>
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 发布动态页面 -->
+            <div class="page" id="page-publish">
+                <div class="page-header-bar gradient-bg" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 20px; cursor: pointer; color: #333333;" onclick="switchPage('page-community')">✕</span>
+                    <div style="font-size: 17px; font-weight: 700; color: #333333;">发布动态</div>
+                    <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer;" onclick="publishPost()">发布</div>
+                </div>
+
+                <div style="padding: 16px;">
+                    <!-- 文字输入 -->
+                    <textarea id="postContent" placeholder="分享你的养宠日常..." style="width: 100%; height: 100px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #333333; font-size: 15px; resize: none; outline: none; line-height: 1.6; font-family: inherit; padding: 12px; box-sizing: border-box;"></textarea>
+
+                    <!-- 图片/视频上传 -->
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <div style="width: 60px; height: 60px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer;">
+                            <span style="font-size: 20px;">📷</span>
+                            <span style="font-size: 9px; color: rgba(255,255,255,0.5);">照片</span>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer;">
+                            <span style="font-size: 20px;">🎥</span>
+                            <span style="font-size: 9px; color: rgba(255,255,255,0.5);">视频</span>
+                        </div>
+                    </div>
+
+                    <!-- 话题标签 -->
+                    <div style="margin-top: 12px;">
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">添加话题</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            <div style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.8);"># meodou</div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.8);"># 智能猫厕所</div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; color: rgba(255,255,255,0.8);"># 养猫日常</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 档案页面 -->
+            <div class="page" id="page-profile">
+                <div class="profile-header-sec">
+                    <div class="profile-avatar-xl">🐱</div>
+                    <div class="profile-name-xl">小橘</div>
+                    <div class="profile-breed-xl">中华田园猫 · 2岁</div>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="profile-stat-card">
+                        <div class="profile-stat-num-lg">4.5</div>
+                        <div class="profile-stat-lbl-lg">体重(kg)</div>
+                    </div>
+                    <div class="profile-stat-card">
+                        <div class="profile-stat-num-lg">156</div>
+                        <div class="profile-stat-lbl-lg">使用次数</div>
+                    </div>
+                    <div class="profile-stat-card">
+                        <div class="profile-stat-num-lg">98%</div>
+                        <div class="profile-stat-lbl-lg">健康率</div>
+                    </div>
+                    <div class="profile-stat-card">
+                        <div class="profile-stat-num-lg">12</div>
+                        <div class="profile-stat-lbl-lg">天持续</div>
+                    </div>
+                </div>
+
+                <div class="profile-info-card">
+                    <div class="profile-info-title">📋 宠物资料</div>
+                    <div class="profile-info-grid">
+                        <div class="profile-info-item">
+                            <label>昵称</label>
+                            <span>小橘</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>品种</label>
+                            <span>中华田园猫</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>性别</label>
+                            <span>公</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>年龄</label>
+                            <span>2岁</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>体重</label>
+                            <span>4.5kg</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>性格</label>
+                            <span>活泼可爱</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>添加时间</label>
+                            <span>2023-06-15</span>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>疫苗状态</label>
+                            <span style="color: #4CAF50;">已完成</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-func-card">
+                    <div class="ai-func-header">
+                        <div class="ai-func-icon">🤖</div>
+                        <div class="ai-func-title">
+                            <h4>AI 趣味养宠</h4>
+                            <p>和AI一起探索养宠乐趣</p>
+                        </div>
+                    </div>
+                    <div class="ai-func-grid">
+                        <div class="ai-func-item">
+                            <div class="ai-func-item-icon">🧬</div>
+                            <div class="ai-func-item-text">AI颜值分析</div>
+                        </div>
+                        <div class="ai-func-item">
+                            <div class="ai-func-item-icon">🎨</div>
+                            <div class="ai-func-item-text">AI绘画</div>
+                        </div>
+                        <div class="ai-func-item">
+                            <div class="ai-func-item-icon">💭</div>
+                            <div class="ai-func-item-text">AI起名</div>
+                        </div>
+                        <div class="ai-func-item">
+                            <div class="ai-func-item-icon">📝</div>
+                            <div class="ai-func-item-text">AI问答</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="edit-profile-btn">✏️ 编辑宠物资料</button>
+
+                <div style="height: 100px;"></div>
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="bottom-nav">
+                <div class="nav-btn active" onclick="switchPage('page-home')">
+                    <div class="nav-icon-box">🏠</div>
+                    <span class="nav-label">首页</span>
+                </div>
+                <div class="nav-btn" onclick="switchPage('page-camera')">
+                    <div class="nav-icon-box">📹</div>
+                    <span class="nav-label">监控</span>
+                </div>
+                <div class="nav-btn" onclick="switchPage('page-shop')">
+                    <div class="nav-icon-box">🛒</div>
+                    <span class="nav-label">超市</span>
+                </div>
+                <div class="nav-btn" onclick="switchPage('page-community')">
+                    <div class="nav-icon-box">💬</div>
+                    <span class="nav-label">社区</span>
+                </div>
+                <div class="nav-btn" onclick="switchPage('page-member')">
+                    <div class="nav-icon-box">👤</div>
+                    <span class="nav-label">我的</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 显示目标页面
+            document.getElementById(pageId).classList.add('active');
+
+            // 更新底部导航状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 根据页面ID设置导航栏激活状态
+            const navIndex = {
+                'page-home': 0,
+                'page-camera': 1,
+                'page-shop': 2,
+                'page-community': 3,
+                'page-member': 4
+            };
+
+            if (navIndex[pageId] !== undefined) {
+                document.querySelectorAll('.nav-btn')[navIndex[pageId]].classList.add('active');
+            }
+
+            // 滚动到顶部
+            document.getElementById(pageId).scrollTop = 0;
+        }
+
+        function publishPost() {
+            const content = document.getElementById('postContent').value;
+            if (!content.trim()) {
+                alert('请输入内容');
+                return;
+            }
+
+            // 获取当前时间
+            const now = new Date();
+            const timeStr = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            // 创建新的动态卡片HTML（带评论区）
+            const newPost = `
+                <div class="post-card-sec">
+                    <div class="post-user-row">
+                        <div class="post-avatar-sm">👤</div>
+                        <div class="post-user-info">
+                            <h4>铲屎官小王</h4>
+                            <p>刚刚</p>
+                        </div>
+                    </div>
+                    <div class="post-text-content">${content}</div>
+                    <div class="post-actions-row action-row-new">
+                        <div class="action-left">
+                            <div class="post-action-item" onclick="toggleLike(this)">❤️ <span class="like-count">0</span></div>
+                            <div class="post-action-item" onclick="toggleComment(this)">💬 <span class="comment-count">0</span></div>
+                        </div>
+                        <div class="post-action-item" onclick="toggleCollect(this)">⭐ 收藏</div>
+                    </div>
+                    <div class="comment-section" style="display: none;">
+                        <div class="comment-input-row">
+                            <input type="text" class="comment-input" placeholder="写评论...">
+                            <button class="comment-submit" onclick="submitComment(this)">发送</button>
+                        </div>
+                        <div class="comment-list"></div>
+                    </div>
+                </div>
+            `;
+
+            // 找到社区页面中的第一个动态卡片，在它前面插入新动态
+            const communityPage = document.getElementById('page-community');
+            const firstPost = communityPage.querySelector('.post-card-sec');
+            if (firstPost) {
+                firstPost.insertAdjacentHTML('beforebegin', newPost);
+            }
+
+            // 清空输入框
+            document.getElementById('postContent').value = '';
+
+            // 切换回社区页面
+            switchPage('page-community');
+        }
+
+        // 点赞功能
+        function toggleLike(element) {
+            const likeCount = element.querySelector('.like-count');
+            let count = parseInt(likeCount.textContent);
+            if (element.classList.contains('liked')) {
+                element.classList.remove('liked');
+                element.innerHTML = '❤️ <span class="like-count">' + (count - 1) + '</span>';
+            } else {
+                element.classList.add('liked');
+                element.innerHTML = '❤️ <span class="like-count">' + (count + 1) + '</span>';
+            }
+        }
+
+        // 评论功能
+        function toggleComment(element) {
+            // 找到当前动态的评论区
+            const postCard = element.closest('.post-card-sec');
+            const commentSection = postCard.querySelector('.comment-section');
+            if (commentSection.style.display === 'none') {
+                commentSection.style.display = 'block';
+            } else {
+                commentSection.style.display = 'none';
+            }
+        }
+
+        // 收藏功能
+        function toggleCollect(element) {
+            if (element.classList.contains('collected')) {
+                element.classList.remove('collected');
+                element.textContent = '⭐ 收藏';
+            } else {
+                element.classList.add('collected');
+                element.textContent = '⭐ 已收藏';
+                element.style.color = '#2563eb';
+            }
+        }
+
+        // 提交评论
+        function submitComment(button) {
+            const commentInput = button.previousElementSibling;
+            const commentText = commentInput.value.trim();
+            if (!commentText) {
+                return;
+            }
+
+            // 创建新评论
+            const commentList = button.closest('.comment-section').querySelector('.comment-list');
+            const newComment = `
+                <div class="comment-item">
+                    <div class="comment-avatar">👤</div>
+                    <div class="comment-content">
+                        <div class="comment-user">铲屎官小王</div>
+                        <div class="comment-text">${commentText}</div>
+                        <div class="comment-time">刚刚</div>
+                    </div>
+                </div>
+            `;
+            commentList.insertAdjacentHTML('beforeend', newComment);
+
+            // 更新评论数
+            const postCard = button.closest('.post-card-sec');
+            const commentCount = postCard.querySelector('.comment-count');
+            let count = parseInt(commentCount.textContent);
+            commentCount.textContent = count + 1;
+
+            // 清空输入框
+            commentInput.value = '';
+        }
+
+        // 分类切换商品
+        document.querySelectorAll('.shop-cat-pill').forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有active
+                document.querySelectorAll('.shop-cat-pill').forEach(i => i.classList.remove('active'));
+                // 添加当前active
+                this.classList.add('active');
+
+                // 获取当前分类名
+                const category = this.querySelector('.cat-pill-text').textContent;
+
+                // 切换商品显示
+                document.querySelectorAll('.product-card-sec').forEach(card => {
+                    if (category === '猫粮' && card.dataset.category === '猫粮') {
+                        card.style.display = 'block';
+                    } else if (category === '玩具' && card.dataset.category === '玩具') {
+                        card.style.display = 'block';
+                    } else if (category === '药品' && card.dataset.category === '药品') {
+                        card.style.display = 'block';
+                    } else if (category === '护理' && card.dataset.category === '护理') {
+                        card.style.display = 'block';
+                    } else if (category === '用品' && card.dataset.category === '用品') {
+                        card.style.display = 'block';
+                    } else if (category === '耗材' && card.dataset.category === '耗材') {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 购物车功能
+        let cart = [];
+
+        function addToCart(name, price, icon) {
+            cart.push({name: name, price: price, icon: icon, quantity: 1});
+            updateCartCount();
+            showToast('已加入购物车 🛒');
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const countEl = document.getElementById('cart-count');
+            if (count > 0) {
+                countEl.style.display = 'block';
+                countEl.textContent = count;
+            } else {
+                countEl.style.display = 'none';
+            }
+        }
+
+        function renderCart() {
+            const cartList = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            if (cart.length === 0) {
+                cartList.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: #999;">🛒 购物车是空的</div>';
+                totalEl.textContent = '¥0';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price * item.quantity;
+                html += `
+                    <div style="display: flex; align-items: center; padding: 12px; background: #fff; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <div style="font-size: 30px; margin-right: 12px;">${item.icon}</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 14px; font-weight: 600; color: #333;">${item.name}</div>
+                            <div style="font-size: 14px; color: #ff6b35; font-weight: bold;">¥${item.price}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span onclick="changeQuantity(${index}, -1)" style="width: 24px; height: 24px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">-</span>
+                            <span style="min-width: 20px; text-align: center;">${item.quantity}</span>
+                            <span onclick="changeQuantity(${index}, 1)" style="width: 24px; height: 24px; background: #2563eb; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">+</span>
+                        </div>
+                    </div>
+                `;
+            });
+            cartList.innerHTML = html;
+            totalEl.textContent = '¥' + total;
+        }
+
+        function changeQuantity(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartCount();
+            renderCart();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px; border-radius: 8px; z-index: 9999; font-size: 14px;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 1500);
+        }
+
+        // 聊天功能
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            const userMsg = document.createElement('div');
+            userMsg.style.cssText = 'display: flex; gap: 10px; margin-bottom: 16px; flex-direction: row-reverse;';
+            userMsg.innerHTML = `
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👤</div>
+                <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 18px 4px 18px 18px; padding: 12px 16px; max-width: 75%;">
+                    <div style="font-size: 14px; color: #ffffff; line-height: 1.5;">${message}</div>
+                </div>
+            `;
+            chatMessages.appendChild(userMsg);
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // 模拟医生回复
+            setTimeout(() => {
+                const doctorMsg = document.createElement('div');
+                doctorMsg.style.cssText = 'display: flex; gap: 10px; margin-bottom: 16px;';
+                doctorMsg.innerHTML = `
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">👨‍⚕️</div>
+                    <div style="background: #f0f0f0; border-radius: 18px 18px 18px 4px; padding: 12px 16px; max-width: 75%;">
+                        <div style="font-size: 14px; color: #333333; line-height: 1.5;">收到您的消息了！请问还有什么需要帮助的吗？</div>
+                    </div>
+                `;
+                chatMessages.appendChild(doctorMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+
+        // AI功能
+        function showAIResult(type) {
+            const results = {
+                '颜值': '🎨 颜值分析结果：小橘的颜值评分为9.2分！眼睛大大的很有神，毛色光亮，品相优良，是一只非常可爱的猫咪！',
+                '绘画': '🎨 AI绘画生成中...\n\n已为您生成小橘的卡通风格画像，保存到相册啦！',
+                '起名': '📝 根据小橘的特征，推荐以下名字：\n1. 橘糖\n2. 小暖\n3. 团子\n4. 布丁\n5. 胖橘'
+            };
+            showToast(results[type]);
+        }
+
+        // 监控按钮功能
+        function monitorAction(action) {
+            const messages = {
+                '清理': '已启动自动清理功能 🧹',
+                '重置': '设备已重置为出厂设置 ⚙️',
+                '清空': '数据已清空 🗑️'
+            };
+            showToast(messages[action] || '操作成功');
+        }
+
+        // 医院操作
+        function hospitalAction(action, name) {
+            if (action === 'send') {
+                switchPage('page-chat');
+            } else if (action === 'book') {
+                showToast('已预约 ' + name + ' 📅');
+            }
+        }
+
+        // 会员积分换购
+        function exchangeProduct(name, points) {
+            showToast('成功兑换 ' + name + ' 🎉\n消耗 ' + points + ' 积分');
+        }
+    </script>
+</body>
+</html>

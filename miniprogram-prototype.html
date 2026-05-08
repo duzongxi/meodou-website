@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>meodou 微信小程序原型设计</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Alibaba PuHuiTi';
+            src: url('fonts/AlibabaPuHuiTi-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #07C160 0%, #1aad19 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .prototype-title {
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .prototype-subtitle {
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* 小程序框架 */
+        .miniprogram-frame {
+            width: 375px;
+            height: 720px;
+            background: #f6f6f6;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow:
+                0 30px 60px rgba(0,0,0,0.3),
+                0 0 0 8px #1a1a1a,
+                0 0 0 10px #333;
+            position: relative;
+        }
+
+        /* 小程序导航栏 */
+        .mp-nav {
+            height: 44px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+
+        .mp-nav-title {
+            color: #000;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .mp-nav-back {
+            position: absolute;
+            left: 16px;
+            color: #000;
+            font-size: 18px;
+        }
+
+        .mp-nav-home {
+            position: absolute;
+            right: 16px;
+            color: #000;
+            font-size: 18px;
+        }
+
+        /* 小程序胶囊 */
+        .mp-capsule {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 87px;
+            height: 32px;
+            background: #f6f6f6;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .mp-capsule-dot {
+            width: 6px;
+            height: 6px;
+            background: #000;
+            border-radius: 50%;
+        }
+
+        .mp-capsule-close {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #000;
+            border-radius: 2px;
+        }
+
+        /* 小程序内容区 */
+        .mp-content {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            background: #f6f6f6;
+        }
+
+        .mp-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 首页样式 */
+        .mp-header {
+            background: linear-gradient(135deg, #C9A962 0%, #8B7355 100%);
+            padding: 20px;
+            color: #fff;
+        }
+
+        .mp-greeting {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .mp-username {
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .mp-health-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mp-health-score {
+            font-size: 48px;
+            font-weight: 900;
+        }
+
+        .mp-health-info {
+            flex: 1;
+        }
+
+        .mp-health-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .mp-health-trend {
+            font-size: 12px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
+        /* 设备列表 */
+        .mp-section {
+            padding: 16px;
+        }
+
+        .mp-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mp-section-more {
+            font-size: 13px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .mp-device-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-device-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .mp-device-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #C9A962 0%, #8B7355 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .mp-device-name {
+            flex: 1;
+        }
+
+        .mp-device-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .mp-device-status {
+            font-size: 12px;
+            color: #07C160;
+            margin-top: 2px;
+        }
+
+        .mp-device-arrow {
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        .mp-device-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .mp-metric {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .mp-metric-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #C9A962;
+        }
+
+        .mp-metric-label {
+            font-size: 11px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        /* 快捷功能 */
+        .mp-quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+            margin-bottom: 16px;
+        }
+
+        .mp-action-item {
+            text-align: center;
+        }
+
+        .mp-action-icon {
+            width: 48px;
+            height: 48px;
+            background: #fff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-action-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 设备详情页 */
+        .mp-detail-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .mp-detail-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .mp-detail-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .mp-detail-status {
+            font-size: 13px;
+            color: #4ADE80;
+            margin-top: 4px;
+        }
+
+        .mp-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .mp-stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-stat-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .mp-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .mp-stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .mp-control-card {
+            background: linear-gradient(135deg, #C9A962 0%, #8B7355 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 0 16px 16px;
+            text-align: center;
+        }
+
+        .mp-control-title {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+        }
+
+        .mp-control-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 24px;
+            padding: 12px 32px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+
+        /* 记录列表 */
+        .mp-record-card {
+            background: #fff;
+            border-radius: 16px;
+            margin: 0 16px 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-record-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .mp-record-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .mp-record-item:last-child {
+            border-bottom: none;
+        }
+
+        .mp-record-dot {
+            width: 8px;
+            height: 8px;
+            background: #C9A962;
+            border-radius: 50%;
+            margin-top: 6px;
+        }
+
+        .mp-record-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .mp-record-text {
+            font-size: 14px;
+            color: #333;
+            margin-top: 2px;
+        }
+
+        /* 猫垫详情 */
+        .mp-pad-visual {
+            background: #fff;
+            border-radius: 16px;
+            margin: 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-pad-circle {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .mp-pad-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #f0f0f0;
+        }
+
+        .mp-pad-progress {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid transparent;
+            border-top-color: #C9A962;
+            border-right-color: #C9A962;
+            transform: rotate(45deg);
+        }
+
+        .mp-pad-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .mp-pad-percent {
+            font-size: 36px;
+            font-weight: 900;
+            color: #C9A962;
+        }
+
+        .mp-pad-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .mp-pad-status {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #4CAF50;
+            font-size: 13px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-top: 16px;
+        }
+
+        /* 图表 */
+        .mp-chart-card {
+            background: #fff;
+            border-radius: 16px;
+            margin: 0 16px 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .mp-chart-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .mp-chart-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mp-chart-tab {
+            font-size: 12px;
+            color: #999;
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        .mp-chart-tab.active {
+            background: #C9A962;
+            color: #fff;
+        }
+
+        .mp-chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 100px;
+        }
+
+        .mp-chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #C9A962, #D4B87A);
+            border-radius: 4px 4px 0 0;
+            min-height: 20px;
+        }
+
+        .mp-chart-labels {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .mp-chart-label {
+            flex: 1;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+        }
+
+        /* 底部操作 */
+        .mp-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 16px 16px;
+        }
+
+        .mp-action-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-action-card-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .mp-action-card-text {
+            font-size: 13px;
+            color: #333;
+        }
+
+        /* 小程序底部Tab */
+        .mp-tabbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .mp-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: #999;
+            font-size: 10px;
+        }
+
+        .mp-tab-item.active {
+            color: #C9A962;
+        }
+
+        .mp-tab-icon {
+            font-size: 22px;
+        }
+
+        /* 页面标签 */
+        .page-label {
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 16px;
+        }
+
+        /* 健康报告页 */
+        .mp-pet-card {
+            background: linear-gradient(135deg, #C9A962 0%, #8B7355 100%);
+            margin: 16px;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mp-pet-avatar {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .mp-pet-info {
+            flex: 1;
+            color: #fff;
+        }
+
+        .mp-pet-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .mp-pet-breed {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        .mp-pet-score {
+            text-align: right;
+            color: #fff;
+        }
+
+        .mp-pet-score-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .mp-pet-score-value {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .mp-health-list {
+            padding: 0 16px;
+        }
+
+        .mp-health-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .mp-health-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .mp-health-item-title {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .mp-health-item-score {
+            font-size: 14px;
+            color: #4ADE80;
+            font-weight: 500;
+        }
+
+        .mp-health-item-bar {
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .mp-health-item-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4ADE80, #C9A962);
+            border-radius: 3px;
+        }
+
+        .mp-tip-card {
+            background: #fff3e0;
+            border-radius: 14px;
+            padding: 14px;
+            margin: 0 16px 16px;
+            border-left: 3px solid #ff9800;
+        }
+
+        .mp-tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .mp-tip-icon {
+            font-size: 18px;
+        }
+
+        .mp-tip-title {
+            font-size: 14px;
+            color: #f57c00;
+            font-weight: 600;
+        }
+
+        .mp-tip-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="prototype-title">meodou 微信小程序原型设计</h1>
+    <p class="prototype-subtitle">MVP版本 · 设备监控与远程控制</p>
+
+    <!-- 首页 -->
+    <div class="miniprogram-frame">
+        <div class="mp-nav">
+            <span class="mp-nav-title">meodou</span>
+            <div class="mp-capsule">
+                <div class="mp-capsule-dot"></div>
+                <div class="mp-capsule-close"></div>
+            </div>
+        </div>
+        <div class="mp-content">
+            <div class="mp-header">
+                <p class="mp-greeting">早上好</p>
+                <h2 class="mp-username">欢迎回来</h2>
+                <div class="mp-health-card">
+                    <span class="mp-health-score">92</span>
+                    <div class="mp-health-info">
+                        <p class="mp-health-label">今日健康评分</p>
+                        <p class="mp-health-trend">↑ 3 较昨日提升</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mp-quick-actions">
+                <div class="mp-action-item">
+                    <div class="mp-action-icon">🚽</div>
+                    <p class="mp-action-text">猫厕所</p>
+                </div>
+                <div class="mp-action-item">
+                    <div class="mp-action-icon">🛏️</div>
+                    <p class="mp-action-text">猫垫</p>
+                </div>
+                <div class="mp-action-item">
+                    <div class="mp-action-icon">📊</div>
+                    <p class="mp-action-text">健康</p>
+                </div>
+                <div class="mp-action-item">
+                    <div class="mp-action-icon">🛒</div>
+                    <p class="mp-action-text">商城</p>
+                </div>
+            </div>
+
+            <div class="mp-section">
+                <h3 class="mp-section-title">
+                    我的设备
+                    <span class="mp-section-more">管理 ›</span>
+                </h3>
+
+                <div class="mp-device-card">
+                    <div class="mp-device-header">
+                        <div class="mp-device-icon">🚽</div>
+                        <div class="mp-device-name">
+                            <p class="mp-device-title">无砂自净智能猫厕所</p>
+                            <p class="mp-device-status">● 在线 · 运行正常</p>
+                        </div>
+                        <span class="mp-device-arrow">›</span>
+                    </div>
+                    <div class="mp-device-metrics">
+                        <div class="mp-metric">
+                            <p class="mp-metric-value">5</p>
+                            <p class="mp-metric-label">今日使用</p>
+                        </div>
+                        <div class="mp-metric">
+                            <p class="mp-metric-value">12h</p>
+                            <p class="mp-metric-label">间隔时长</p>
+                        </div>
+                        <div class="mp-metric">
+                            <p class="mp-metric-value">98%</p>
+                            <p class="mp-metric-label">清洁度</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mp-device-card">
+                    <div class="mp-device-header">
+                        <div class="mp-device-icon">🛏️</div>
+                        <div class="mp-device-name">
+                            <p class="mp-device-title">meodou智能猫垫</p>
+                            <p class="mp-device-status">● 在线 · 剩余充足</p>
+                        </div>
+                        <span class="mp-device-arrow">›</span>
+                    </div>
+                    <div class="mp-device-metrics">
+                        <div class="mp-metric">
+                            <p class="mp-metric-value">78%</p>
+                            <p class="mp-metric-label">剩余量</p>
+                        </div>
+                        <div class="mp-metric">
+                            <p class="mp-metric-value">6天</p>
+                            <p class="mp-metric-label">预计可用</p>
+                        </div>
+                        <div class="mp-metric">
+                            <p class="mp-metric-value">正常</p>
+                            <p class="mp-metric-label">状态</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mp-tabbar">
+            <div class="mp-tab-item active">
+                <span class="mp-tab-icon">🏠</span>
+                <span>首页</span>
+            </div>
+            <div class="mp-tab-item">
+                <span class="mp-tab-icon">📊</span>
+                <span>健康</span>
+            </div>
+            <div class="mp-tab-item">
+                <span class="mp-tab-icon">👤</span>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+    <p class="page-label">首页 · 设备总览</p>
+
+    <!-- 猫厕所详情 -->
+    <div class="miniprogram-frame">
+        <div class="mp-nav">
+            <span class="mp-nav-back">‹</span>
+            <span class="mp-nav-title">智能猫厕所</span>
+        </div>
+        <div class="mp-content">
+            <div class="mp-detail-header">
+                <p class="mp-detail-icon">🚽</p>
+                <p class="mp-detail-title">无砂自净智能猫厕所</p>
+                <p class="mp-detail-status">● 在线 · 运行正常</p>
+            </div>
+
+            <div class="mp-stats-grid">
+                <div class="mp-stat-card">
+                    <p class="mp-stat-icon">🚽</p>
+                    <p class="mp-stat-value">5<span style="font-size:14px;color:#999">次</span></p>
+                    <p class="mp-stat-label">今日使用次数</p>
+                </div>
+                <div class="mp-stat-card">
+                    <p class="mp-stat-icon">⏱️</p>
+                    <p class="mp-stat-value">3.2<span style="font-size:14px;color:#999">分钟</span></p>
+                    <p class="mp-stat-label">平均如厕时长</p>
+                </div>
+                <div class="mp-stat-card">
+                    <p class="mp-stat-icon">✨</p>
+                    <p class="mp-stat-value">98<span style="font-size:14px;color:#999">%</span></p>
+                    <p class="mp-stat-label">当前清洁度</p>
+                </div>
+                <div class="mp-stat-card">
+                    <p class="mp-stat-icon">📅</p>
+                    <p class="mp-stat-value">12<span style="font-size:14px;color:#999">小时</span></p>
+                    <p class="mp-stat-label">上次使用间隔</p>
+                </div>
+            </div>
+
+            <div class="mp-control-card">
+                <p class="mp-control-title">远程控制</p>
+                <button class="mp-control-btn">🚀 一键启动清洁</button>
+            </div>
+
+            <div class="mp-record-card">
+                <h3 class="mp-record-title">今日使用记录</h3>
+                <div class="mp-record-item">
+                    <div class="mp-record-dot"></div>
+                    <div>
+                        <p class="mp-record-time">08:32</p>
+                        <p class="mp-record-text">小橘使用 · 时长2分30秒 · 正常</p>
+                    </div>
+                </div>
+                <div class="mp-record-item">
+                    <div class="mp-record-dot"></div>
+                    <div>
+                        <p class="mp-record-time">06:15</p>
+                        <p class="mp-record-text">小橘使用 · 时长3分12秒 · 正常</p>
+                    </div>
+                </div>
+                <div class="mp-record-item">
+                    <div class="mp-record-dot"></div>
+                    <div>
+                        <p class="mp-record-time">02:48</p>
+                        <p class="mp-record-text">小橘使用 · 时长1分58秒 · 正常</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="page-label">猫厕所监控</p>
+
+    <!-- 猫垫详情 -->
+    <div class="miniprogram-frame">
+        <div class="mp-nav">
+            <span class="mp-nav-back">‹</span>
+            <span class="mp-nav-title">智能猫垫</span>
+        </div>
+        <div class="mp-content">
+            <div class="mp-detail-header">
+                <p class="mp-detail-icon">🛏️</p>
+                <p class="mp-detail-title">meodou智能猫垫</p>
+                <p class="mp-detail-status">● 在线 · 状态良好</p>
+            </div>
+
+            <div class="mp-pad-visual">
+                <div class="mp-pad-circle">
+                    <div class="mp-pad-bg"></div>
+                    <div class="mp-pad-progress"></div>
+                    <div class="mp-pad-inner">
+                        <p class="mp-pad-percent">78%</p>
+                        <p class="mp-pad-label">剩余量</p>
+                    </div>
+                </div>
+                <div class="mp-pad-status">✓ 状态良好，无需更换</div>
+            </div>
+
+            <div class="mp-chart-card">
+                <div class="mp-chart-header">
+                    <h3 class="mp-chart-title">近7天消耗趋势</h3>
+                    <div class="mp-chart-tabs">
+                        <span class="mp-chart-tab active">周</span>
+                        <span class="mp-chart-tab">月</span>
+                    </div>
+                </div>
+                <div class="mp-chart-bars">
+                    <div class="mp-chart-bar" style="height: 40%;"></div>
+                    <div class="mp-chart-bar" style="height: 55%;"></div>
+                    <div class="mp-chart-bar" style="height: 45%;"></div>
+                    <div class="mp-chart-bar" style="height: 60%;"></div>
+                    <div class="mp-chart-bar" style="height: 50%;"></div>
+                    <div class="mp-chart-bar" style="height: 70%;"></div>
+                    <div class="mp-chart-bar" style="height: 35%;"></div>
+                </div>
+                <div class="mp-chart-labels">
+                    <span class="mp-chart-label">一</span>
+                    <span class="mp-chart-label">二</span>
+                    <span class="mp-chart-label">三</span>
+                    <span class="mp-chart-label">四</span>
+                    <span class="mp-chart-label">五</span>
+                    <span class="mp-chart-label">六</span>
+                    <span class="mp-chart-label">日</span>
+                </div>
+            </div>
+
+            <div class="mp-actions-grid">
+                <div class="mp-action-card">
+                    <p class="mp-action-card-icon">🔔</p>
+                    <p class="mp-action-card-text">设置提醒</p>
+                </div>
+                <div class="mp-action-card">
+                    <p class="mp-action-card-icon">🛒</p>
+                    <p class="mp-action-card-text">购买耗材</p>
+                </div>
+                <div class="mp-action-card">
+                    <p class="mp-action-card-icon">📋</p>
+                    <p class="mp-action-card-text">使用记录</p>
+                </div>
+                <div class="mp-action-card">
+                    <p class="mp-action-card-icon">⚙️</p>
+                    <p class="mp-action-card-text">设备设置</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="page-label">猫垫监控</p>
+
+    <!-- 健康报告 -->
+    <div class="miniprogram-frame">
+        <div class="mp-nav">
+            <span class="mp-nav-back">‹</span>
+            <span class="mp-nav-title">健康报告</span>
+        </div>
+        <div class="mp-content">
+            <div class="mp-pet-card">
+                <div class="mp-pet-avatar">🐱</div>
+                <div class="mp-pet-info">
+                    <p class="mp-pet-name">小橘</p>
+                    <p class="mp-pet-breed">橘猫 · 2岁</p>
+                </div>
+                <div class="mp-pet-score">
+                    <p class="mp-pet-score-label">健康分</p>
+                    <p class="mp-pet-score-value">92</p>
+                </div>
+            </div>
+
+            <div class="mp-health-list">
+                <div class="mp-health-item">
+                    <div class="mp-health-item-header">
+                        <span class="mp-health-item-title">💩 如厕频率</span>
+                        <span class="mp-health-item-score">正常</span>
+                    </div>
+                    <div class="mp-health-item-bar">
+                        <div class="mp-health-item-progress" style="width: 85%;"></div>
+                    </div>
+                </div>
+                <div class="mp-health-item">
+                    <div class="mp-health-item-header">
+                        <span class="mp-health-item-title">⏱️ 如厕时长</span>
+                        <span class="mp-health-item-score">正常</span>
+                    </div>
+                    <div class="mp-health-item-bar">
+                        <div class="mp-health-item-progress" style="width: 90%;"></div>
+                    </div>
+                </div>
+                <div class="mp-health-item">
+                    <div class="mp-health-item-header">
+                        <span class="mp-health-item-title">🏃 活动量</span>
+                        <span class="mp-health-item-score">良好</span>
+                    </div>
+                    <div class="mp-health-item-bar">
+                        <div class="mp-health-item-progress" style="width: 78%;"></div>
+                    </div>
+                </div>
+                <div class="mp-health-item">
+                    <div class="mp-health-item-header">
+                        <span class="mp-health-item-title">😴 休息质量</span>
+                        <span class="mp-health-item-score">优秀</span>
+                    </div>
+                    <div class="mp-health-item-bar">
+                        <div class="mp-health-item-progress" style="width: 95%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mp-tip-card">
+                <div class="mp-tip-header">
+                    <span class="mp-tip-icon">💡</span>
+                    <span class="mp-tip-title">健康建议</span>
+                </div>
+                <p class="mp-tip-text">近3天如厕频率略有下降，建议观察猫咪饮食情况，确保充足饮水。如持续异常请咨询兽医。</p>
+            </div>
+        </div>
+        <div class="mp-tabbar">
+            <div class="mp-tab-item">
+                <span class="mp-tab-icon">🏠</span>
+                <span>首页</span>
+            </div>
+            <div class="mp-tab-item active">
+                <span class="mp-tab-icon">📊</span>
+                <span>健康</span>
+            </div>
+            <div class="mp-tab-item">
+                <span class="mp-tab-icon">👤</span>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+    <p class="page-label">健康报告</p>
+</body>
+</html>

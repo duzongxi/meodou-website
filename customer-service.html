@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户服务 - meodou 喵豆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#C9A962',
+                        'gold-light': '#D4B97A',
+                        'gold-dark': '#A88B4A',
+                        'gray-dark': '#333333',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F5F5F5',
+                    },
+                    fontFamily: {
+                        'sans': ['Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    fontWeight: {
+                        'light': '500',
+                        'normal': '500',
+                        'medium': '600',
+                        'semibold': '700',
+                        'bold': '800',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-dark font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl font-medium tracking-wider text-gray-dark">meodou</span>
+                    <span class="text-2xl font-medium tracking-wider text-gold">喵豆</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">首页</a>
+                    <a href="index.html#products" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">探索产品</a>
+                    <a href="presale.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">新品预售</a>
+                    <a href="member.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">会员中心</a>
+                    <a href="index.html#about" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">关于我们</a>
+                    <a href="customer-service.html" class="nav-link text-sm tracking-wide text-gold">客户服务</a>
+                    <button onclick="openCart()" class="relative p-2 text-gray-medium hover:text-gold transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                        <span id="cart-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-gold text-white text-xs rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+                <button id="menuBtn" class="md:hidden p-2">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="pt-20 min-h-screen">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- 左侧常见问题 -->
+                <div class="md:col-span-1">
+                    <div class="sticky top-24">
+                        <h2 class="text-xl font-light text-gray-dark mb-6">常见问题</h2>
+                        <div class="space-y-2">
+                            <button class="faq-btn w-full text-left px-4 py-3 bg-gray-bg hover:bg-gold/10 text-gray-medium hover:text-gold transition-colors text-sm" data-question="产品如何保修？">
+                                产品如何保修？
+                            </button>
+                            <button class="faq-btn w-full text-left px-4 py-3 bg-gray-bg hover:bg-gold/10 text-gray-medium hover:text-gold transition-colors text-sm" data-question="如何下载APP？">
+                                如何下载APP？
+                            </button>
+                            <button class="faq-btn w-full text-left px-4 py-3 bg-gray-bg hover:bg-gold/10 text-gray-medium hover:text-gold transition-colors text-sm" data-question="支持哪些支付方式？">
+                                支持哪些支付方式？
+                            </button>
+                            <button class="faq-btn w-full text-left px-4 py-3 bg-gray-bg hover:bg-gold/10 text-gray-medium hover:text-gold transition-colors text-sm" data-question="退换货政策是怎样的？">
+                                退换货政策是怎样的？
+                            </button>
+                            <button class="faq-btn w-full text-left px-4 py-3 bg-gray-bg hover:bg-gold/10 text-gray-medium hover:text-gold transition-colors text-sm" data-question="如何联系售后？">
+                                如何联系售后？
+                            </button>
+                        </div>
+
+                        <!-- 联系方式 -->
+                        <div class="mt-8 p-6 border border-gray-100">
+                            <h3 class="text-sm font-medium text-gray-dark mb-4">其他联系方式</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-light">客服热线</p>
+                                        <p class="text-sm text-gray-dark">400-888-6666</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-light">邮箱</p>
+                                        <p class="text-sm text-gray-dark">service@meodou.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-light">服务时间</p>
+                                        <p class="text-sm text-gray-dark">9:00 - 21:00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧聊天区域 -->
+                <div class="md:col-span-2">
+                    <div class="bg-gray-bg h-[600px] flex flex-col">
+                        <!-- 聊天头部 -->
+                        <div class="bg-white px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gold rounded-full flex items-center justify-center">
+                                    <span class="text-white text-lg">🐱</span>
+                                </div>
+                                <div>
+                                    <p class="text-gray-dark font-light">喵豆客服</p>
+                                    <p class="text-xs text-green-500 flex items-center">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                                        在线
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 hover:bg-gray-bg rounded-full transition-colors" title="更多">
+                                    <svg class="w-5 h-5 text-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 聊天消息区域 -->
+                        <div class="flex-1 overflow-y-auto p-6 space-y-4" id="chatMessages">
+                            <!-- 欢迎消息 -->
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-gold rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white text-sm">🐱</span>
+                                </div>
+                                <div class="bg-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+                                    <p class="text-gray-dark text-sm">您好！欢迎来到喵豆客服中心，我是您的专属客服助手。</p>
+                                    <p class="text-gray-dark text-sm mt-2">请问有什么可以帮您的吗？</p>
+                                </div>
+                            </div>
+
+                            <!-- 快捷入口 -->
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-gold rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white text-sm">🐱</span>
+                                </div>
+                                <div class="bg-white rounded-lg px-4 py-3 max-w-md shadow-sm">
+                                    <p class="text-gray-dark text-sm mb-3">您可能想了解：</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="quick-btn px-3 py-1.5 border border-gold text-gold text-xs hover:bg-gold hover:text-white transition-colors rounded">
+                                            产品咨询
+                                        </button>
+                                        <button class="quick-btn px-3 py-1.5 border border-gold text-gold text-xs hover:bg-gold hover:text-white transition-colors rounded">
+                                            售后服务
+                                        </button>
+                                        <button class="quick-btn px-3 py-1.5 border border-gold text-gold text-xs hover:bg-gold hover:text-white transition-colors rounded">
+                                            物流查询
+                                        </button>
+                                        <button class="quick-btn px-3 py-1.5 border border-gold text-gold text-xs hover:bg-gold hover:text-white transition-colors rounded">
+                                            退换货
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 输入区域 -->
+                        <div class="bg-white px-6 py-4 border-t border-gray-100">
+                            <div class="flex items-center space-x-4">
+                                <button class="p-2 hover:bg-gray-bg rounded-full transition-colors" title="添加图片">
+                                    <svg class="w-5 h-5 text-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </button>
+                                <div class="flex-1 relative">
+                                    <input
+                                        type="text"
+                                        id="messageInput"
+                                        placeholder="请输入您的问题..."
+                                        class="w-full px-4 py-3 bg-gray-bg border-none focus:outline-none focus:ring-2 focus:ring-gold/50 text-sm rounded-lg"
+                                    >
+                                </div>
+                                <button id="sendBtn" class="bg-gold text-white px-6 py-3 hover:bg-gold-dark transition-colors rounded-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-dark text-white py-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <span class="text-lg font-light tracking-wider text-white">meodou</span>
+                    <span class="text-lg font-light tracking-wider text-gold">喵豆</span>
+                </div>
+                <p class="text-gray-600 text-sm">© 2024 meodou 喵豆. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/chat.js"></script>
+
+    <!-- 购物车弹窗 -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <h3 class="text-xl font-light text-gray-dark">购物车</h3>
+                <button onclick="closeCart()" class="text-gray-400 hover:text-gray-dark">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+                <div class="text-center text-gray-light py-12"><p>购物车是空的</p></div>
+            </div>
+            <div class="border-t border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-medium">合计</span>
+                    <span class="text-2xl text-gold font-light" id="cart-total">¥0</span>
+                </div>
+                <button onclick="checkout()" class="w-full py-4 bg-gold text-white font-medium hover:bg-gold-dark transition-colors">结算</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getCart() { return JSON.parse(localStorage.getItem('meodou_cart') || '[]'); }
+        function saveCart(cart) { localStorage.setItem('meodou_cart', JSON.stringify(cart)); }
+        function initCartBadge() {
+            const cart = getCart();
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                const total = cart.reduce((s, i) => s + i.quantity, 0);
+                badge.textContent = total;
+                badge.classList.toggle('hidden', total === 0);
+            }
+        }
+        function openCart() { updateCartUI(); document.getElementById('cart-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeCart() { document.getElementById('cart-modal').classList.add('hidden'); document.body.style.overflow = ''; }
+        window.addToCartGlobal = function(product) {
+            let cart = getCart();
+            const existing = cart.find(i => i.id === product.id && i.color === product.color);
+            if (existing) existing.quantity += product.quantity || 1;
+            else cart.push({ id: product.id, name: product.name, price: product.price, color: product.color || '雪域白', quantity: product.quantity || 1 });
+            saveCart(cart); initCartBadge(); openCart();
+        };
+        function updateCartUI() {
+            const cart = getCart();
+            const items = document.getElementById('cart-items');
+            const total = document.getElementById('cart-total');
+            if (total) total.textContent = '¥' + cart.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString();
+            if (!items) return;
+            if (cart.length === 0) items.innerHTML = '<div class="text-center text-gray-light py-12"><p>购物车是空的</p></div>';
+            else items.innerHTML = cart.map((item, i) => '<div class="flex gap-4 py-4 border-b border-gray-100"><div class="w-20 h-20 bg-gray-bg flex items-center justify-center rounded"><span class="text-3xl">🐱</span></div><div class="flex-1"><h4 class="text-gray-dark font-medium">' + item.name + '</h4><p class="text-gray-light text-sm">' + item.color + '</p><div class="flex items-center justify-between mt-2"><span class="text-gold">¥' + item.price + '</span><div class="flex items-center"><button onclick="updateCartItem(' + i + ', -1)" class="w-8 h-8 border border-gray-200">-</button><span class="w-8 text-center">' + item.quantity + '</span><button onclick="updateCartItem(' + i + ', 1)" class="w-8 h-8 border border-gray-200">+</button></div></div></div></div>').join('');
+        }
+        function updateCartItem(index, delta) {
+            let cart = getCart();
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) cart.splice(index, 1);
+            saveCart(cart); initCartBadge(); updateCartUI();
+        }
+        function checkout() { alert('请前往商品详情页下单'); closeCart(); }
+        initCartBadge();
+    </script>
+</body>
+</html>

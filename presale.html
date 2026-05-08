@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新品预售 - meodou喵豆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#C9A962',
+                        'gold-light': '#D4B97A',
+                        'gold-dark': '#A88B4A',
+                        'gray-dark': '#333333',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F5F5F5',
+                    },
+                    fontFamily: {
+                        'display': ['Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Microsoft YaHei', 'sans-serif'],
+                        'sans': ['Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    fontWeight: {
+                        'light': '500',
+                        'normal': '500',
+                        'medium': '600',
+                        'semibold': '700',
+                        'bold': '800',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 预售倒计时样式 */
+        .countdown-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border: 1px solid rgba(201, 169, 98, 0.3);
+        }
+
+        .countdown-number {
+            background: linear-gradient(180deg, #C9A962 0%, #A88B4A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 预售标签动画 */
+        .presale-tag {
+            animation: pulse-gold 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(201, 169, 98, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(201, 169, 98, 0); }
+        }
+
+        /* 折扣徽章 */
+        .discount-badge {
+            background: linear-gradient(135deg, #C9A962 0%, #A88B4A 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+        }
+
+        /* 进度条动画 */
+        .progress-bar {
+            background: linear-gradient(90deg, #C9A962 0%, #D4B97A 50%, #C9A962 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* 预售卡片悬停效果 */
+        .presale-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .presale-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(201, 169, 98, 0.15);
+        }
+
+        /* 价格划线 */
+        .price-original {
+            position: relative;
+        }
+
+        .price-original::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 2px;
+            background: #999;
+            transform: rotate(-5deg);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-dark font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl font-medium tracking-wider text-gray-dark">meodou</span>
+                    <span class="text-2xl font-medium tracking-wider text-gold">喵豆</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">首页</a>
+                    <a href="index.html#products" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">探索产品</a>
+                    <a href="presale.html" class="nav-link text-sm tracking-wide text-gold uppercase">新品预售</a>
+                    <a href="member.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">会员中心</a>
+                    <a href="index.html#about" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">关于我们</a>
+                    <a href="customer-service.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">客户服务</a>
+                    <button onclick="openCart()" class="relative p-2 text-gray-medium hover:text-gold transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                        <span id="cart-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-gold text-white text-xs rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+                <button id="menuBtn" class="md:hidden p-2">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="pt-20">
+        <!-- Hero区域 -->
+        <section class="relative py-20 overflow-hidden" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
+            <!-- 装饰元素 -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-10 left-10 w-32 h-32 border border-gold rounded-full"></div>
+                <div class="absolute bottom-10 right-10 w-48 h-48 border border-gold rounded-full"></div>
+                <div class="absolute top-1/2 left-1/4 w-24 h-24 border border-gold rotate-45"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="text-center">
+                    <!-- 预售标签 -->
+                    <div class="inline-flex items-center space-x-2 presale-tag bg-gold/20 border border-gold/50 rounded-full px-6 py-2 mb-8">
+                        <span class="w-2 h-2 bg-gold rounded-full animate-pulse"></span>
+                        <span class="text-gold text-sm tracking-widest uppercase">限时预售进行中</span>
+                    </div>
+
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+                        新品<span class="text-gold">预售</span>专区
+                    </h1>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
+                        抢先体验最新产品，享受专属预售优惠<br>
+                        限量发售，先到先得
+                    </p>
+
+                    <!-- 倒计时 -->
+                    <div class="flex justify-center items-center space-x-4 md:space-x-6 mb-8">
+                        <div class="countdown-box rounded-lg p-4 md:p-6 text-center min-w-[80px] md:min-w-[100px]">
+                            <div class="countdown-number text-3xl md:text-5xl font-bold" id="days">15</div>
+                            <div class="text-gray-500 text-xs md:text-sm mt-1">天</div>
+                        </div>
+                        <span class="text-gold text-2xl md:text-4xl">:</span>
+                        <div class="countdown-box rounded-lg p-4 md:p-6 text-center min-w-[80px] md:min-w-[100px]">
+                            <div class="countdown-number text-3xl md:text-5xl font-bold" id="hours">23</div>
+                            <div class="text-gray-500 text-xs md:text-sm mt-1">时</div>
+                        </div>
+                        <span class="text-gold text-2xl md:text-4xl">:</span>
+                        <div class="countdown-box rounded-lg p-4 md:p-6 text-center min-w-[80px] md:min-w-[100px]">
+                            <div class="countdown-number text-3xl md:text-5xl font-bold" id="minutes">45</div>
+                            <div class="text-gray-500 text-xs md:text-sm mt-1">分</div>
+                        </div>
+                        <span class="text-gold text-2xl md:text-4xl">:</span>
+                        <div class="countdown-box rounded-lg p-4 md:p-6 text-center min-w-[80px] md:min-w-[100px]">
+                            <div class="countdown-number text-3xl md:text-5xl font-bold" id="seconds">30</div>
+                            <div class="text-gray-500 text-xs md:text-sm mt-1">秒</div>
+                        </div>
+                    </div>
+
+                    <p class="text-gray-500 text-sm">预售截止时间：2024年4月30日 23:59:59</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 预售产品列表 -->
+        <section class="py-20 bg-gray-bg">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <div class="flex items-center justify-center space-x-3 mb-4">
+                        <span class="w-12 h-px bg-gold"></span>
+                        <span class="text-gold text-xs tracking-[0.3em] uppercase">Presale Products</span>
+                        <span class="w-12 h-px bg-gold"></span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-dark">预售产品</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- 预售产品1 - meodou猫垫 -->
+                    <div class="presale-card bg-white rounded-2xl overflow-hidden border border-gray-100">
+                        <div class="relative">
+                            <img src="images/cat-pad-product.png" alt="meodou猫垫" class="w-full h-64 object-contain bg-gray-bg p-6">
+                            <!-- 折扣徽章 -->
+                            <div class="discount-badge absolute top-4 right-4 w-16 h-20 flex flex-col items-center justify-center text-white">
+                                <span class="text-xs">立省</span>
+                                <span class="text-xl font-bold">¥100</span>
+                            </div>
+                            <!-- 预售标签 -->
+                            <div class="absolute top-4 left-4 bg-gold text-white text-xs px-3 py-1 rounded-full">
+                                预售中
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-dark mb-2">meodou猫垫</h3>
+                            <p class="text-gray-light text-sm mb-4">智能温控宠物垫，四季舒适，APP远程控制</p>
+
+                            <!-- 价格 -->
+                            <div class="flex items-baseline space-x-3 mb-4">
+                                <span class="text-3xl font-bold text-gold">¥299</span>
+                                <span class="text-gray-light price-original">¥399</span>
+                                <span class="text-xs text-white bg-red-500 px-2 py-0.5 rounded">7.5折</span>
+                            </div>
+
+                            <!-- 预售进度 -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-medium">预售进度</span>
+                                    <span class="text-gold">已售 156/200 件</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="progress-bar h-full rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+
+                            <!-- 预售权益 -->
+                            <div class="bg-gray-bg rounded-lg p-4 mb-4">
+                                <div class="text-sm text-gray-medium mb-2">预售权益</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">早鸟优惠</span>
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">包邮</span>
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">优先发货</span>
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">延保6个月</span>
+                                </div>
+                            </div>
+
+                            <!-- 预计发货时间 -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-light">预计发货：2024年5月15日</span>
+                                <button class="bg-gold hover:bg-gold-dark text-white px-6 py-2 rounded-lg transition-colors font-medium">
+                                    立即预订
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 预售产品2 - 云端猫窝 -->
+                    <div class="presale-card bg-white rounded-2xl overflow-hidden border border-gray-100">
+                        <div class="relative">
+                            <img src="images/product-bed.png" alt="云端猫窝" class="w-full h-64 object-contain bg-gray-bg p-6">
+                            <!-- 折扣徽章 -->
+                            <div class="discount-badge absolute top-4 right-4 w-16 h-20 flex flex-col items-center justify-center text-white">
+                                <span class="text-xs">立省</span>
+                                <span class="text-xl font-bold">¥150</span>
+                            </div>
+                            <!-- 预售标签 -->
+                            <div class="absolute top-4 left-4 bg-gold text-white text-xs px-3 py-1 rounded-full">
+                                预售中
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-dark mb-2">云端猫窝</h3>
+                            <p class="text-gray-light text-sm mb-4">云朵般柔软触感，智能恒温，让爱宠安睡每一夜</p>
+
+                            <!-- 价格 -->
+                            <div class="flex items-baseline space-x-3 mb-4">
+                                <span class="text-3xl font-bold text-gold">¥449</span>
+                                <span class="text-gray-light price-original">¥599</span>
+                                <span class="text-xs text-white bg-red-500 px-2 py-0.5 rounded">7.5折</span>
+                            </div>
+
+                            <!-- 预售进度 -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-medium">预售进度</span>
+                                    <span class="text-gold">已售 89/150 件</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="progress-bar h-full rounded-full" style="width: 59%"></div>
+                                </div>
+                            </div>
+
+                            <!-- 预售权益 -->
+                            <div class="bg-gray-bg rounded-lg p-4 mb-4">
+                                <div class="text-sm text-gray-medium mb-2">预售权益</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">早鸟优惠</span>
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">包邮</span>
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">赠送猫薄荷</span>
+                                    <span class="text-xs bg-white border border-gold/30 text-gold px-2 py-1 rounded">延保6个月</span>
+                                </div>
+                            </div>
+
+                            <!-- 预计发货时间 -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-light">预计发货：2024年5月20日</span>
+                                <button class="bg-gold hover:bg-gold-dark text-white px-6 py-2 rounded-lg transition-colors font-medium">
+                                    立即预订
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 预售规则 -->
+        <section class="py-20 bg-white">
+            <div class="max-w-4xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <div class="flex items-center justify-center space-x-3 mb-4">
+                        <span class="w-12 h-px bg-gold"></span>
+                        <span class="text-gold text-xs tracking-[0.3em] uppercase">Presale Rules</span>
+                        <span class="w-12 h-px bg-gold"></span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-dark">预售规则</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="flex items-start space-x-4 p-6 bg-gray-bg rounded-xl">
+                        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-gold text-xl font-bold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-dark mb-2">预售定金</h4>
+                            <p class="text-gray-medium text-sm">支付定金即可锁定预售名额，定金支持随时退款</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4 p-6 bg-gray-bg rounded-xl">
+                        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-gold text-xl font-bold">2</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-dark mb-2">尾款支付</h4>
+                            <p class="text-gray-medium text-sm">产品发货前3天支付尾款，届时会有短信提醒</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4 p-6 bg-gray-bg rounded-xl">
+                        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-gold text-xl font-bold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-dark mb-2">发货时间</h4>
+                            <p class="text-gray-medium text-sm">预售产品按预计时间发货，预售用户优先发货</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4 p-6 bg-gray-bg rounded-xl">
+                        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-gold text-xl font-bold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-dark mb-2">售后保障</h4>
+                            <p class="text-gray-medium text-sm">享受正常售后政策，预售用户额外延保6个月</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 温馨提示 -->
+                <div class="mt-12 p-6 border border-gold/30 rounded-xl bg-gold/5">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-6 h-6 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <h4 class="font-bold text-gray-dark mb-2">温馨提示</h4>
+                            <ul class="text-gray-medium text-sm space-y-1">
+                                <li>• 预售产品不支持使用其他优惠券</li>
+                                <li>• 预售订单可与普通订单合并发货</li>
+                                <li>• 如有疑问请联系在线客服</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="bg-gray-dark text-white py-16">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid md:grid-cols-4 gap-12 mb-12">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-6">
+                            <span class="text-2xl font-medium tracking-wider text-white">meodou</span>
+                            <span class="text-2xl font-medium tracking-wider text-gold">喵豆</span>
+                        </div>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">
+                            科技，让爱更简单<br>
+                            为宠物创造更美好的生活
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-gold text-sm tracking-widest uppercase mb-6">产品</h4>
+                        <ul class="space-y-3 text-gray-500 text-sm">
+                            <li><a href="product-detail.html?id=1" class="hover:text-gold transition-colors">无砂自净智能猫厕所</a></li>
+                            <li><a href="product-detail.html?id=2" class="hover:text-gold transition-colors">meodou猫垫</a></li>
+                            <li><a href="product-detail.html?id=3" class="hover:text-gold transition-colors">智享喂食器</a></li>
+                            <li><a href="product-detail.html?id=4" class="hover:text-gold transition-colors">活泉饮水机</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-gold text-sm tracking-widest uppercase mb-6">服务</h4>
+                        <ul class="space-y-3 text-gray-500 text-sm">
+                            <li><a href="customer-service.html" class="hover:text-gold transition-colors">客户服务</a></li>
+                            <li><a href="member.html" class="hover:text-gold transition-colors">会员中心</a></li>
+                            <li><a href="presale.html" class="hover:text-gold transition-colors">新品预售</a></li>
+                            <li><a href="#" class="hover:text-gold transition-colors">常见问题</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-gold text-sm tracking-widest uppercase mb-6">联系我们</h4>
+                        <ul class="space-y-3 text-gray-500 text-sm">
+                            <li>客服热线：400-888-8888</li>
+                            <li>工作时间：9:00-21:00</li>
+                            <li>邮箱：service@meodou.com</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-700 pt-8 text-center text-gray-500 text-sm">
+                    <p>© 2024 meodou喵豆. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // 倒计时功能
+        function updateCountdown() {
+            // 设置预售截止时间（示例：15天后）
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 15);
+
+            function update() {
+                const now = new Date();
+                const diff = endDate - now;
+
+                if (diff <= 0) {
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+
+            update();
+            setInterval(update, 1000);
+        }
+
+        // 移动端菜单
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            const menu = document.getElementById('mobileMenu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        });
+
+        // 初始化
+        updateCountdown();
+    </script>
+
+    <!-- 购物车弹窗 -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <h3 class="text-xl font-light text-gray-dark">购物车</h3>
+                <button onclick="closeCart()" class="text-gray-400 hover:text-gray-dark">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+                <div class="text-center text-gray-light py-12">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                    </svg>
+                    <p>购物车是空的</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-medium">合计</span>
+                    <span class="text-2xl text-gold font-light" id="cart-total">¥0</span>
+                </div>
+                <button onclick="checkout()" class="w-full py-4 bg-gold text-white font-medium hover:bg-gold-dark transition-colors">结算</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getCart() { return JSON.parse(localStorage.getItem('meodou_cart') || '[]'); }
+        function saveCart(cart) { localStorage.setItem('meodou_cart', JSON.stringify(cart)); }
+        function initCartBadge() {
+            const cart = getCart();
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                const total = cart.reduce((s, i) => s + i.quantity, 0);
+                badge.textContent = total;
+                badge.classList.toggle('hidden', total === 0);
+            }
+        }
+        function openCart() {
+            updateCartUI();
+            document.getElementById('cart-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCart() {
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        window.addToCartGlobal = function(product) {
+            let cart = getCart();
+            const existing = cart.find(i => i.id === product.id && i.color === product.color);
+            if (existing) existing.quantity += product.quantity || 1;
+            else cart.push({ id: product.id, name: product.name, price: product.price, color: product.color || '雪域白', quantity: product.quantity || 1 });
+            saveCart(cart);
+            initCartBadge();
+            openCart();
+        };
+        function updateCartUI() {
+            const cart = getCart();
+            const items = document.getElementById('cart-items');
+            const total = document.getElementById('cart-total');
+            if (total) total.textContent = '¥' + cart.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString();
+            if (!items) return;
+            if (cart.length === 0) {
+                items.innerHTML = '<div class="text-center text-gray-light py-12"><p>购物车是空的</p></div>';
+            } else {
+                items.innerHTML = cart.map((item, i) => '<div class="flex gap-4 py-4 border-b border-gray-100"><div class="w-20 h-20 bg-gray-bg flex items-center justify-center rounded"><span class="text-3xl">🐱</span></div><div class="flex-1"><h4 class="text-gray-dark font-medium">' + item.name + '</h4><p class="text-gray-light text-sm">' + item.color + '</p><div class="flex items-center justify-between mt-2"><span class="text-gold">¥' + item.price + '</span><div class="flex items-center"><button onclick="updateCartItem(' + i + ', -1)" class="w-8 h-8 border border-gray-200">-</button><span class="w-8 text-center">' + item.quantity + '</span><button onclick="updateCartItem(' + i + ', 1)" class="w-8 h-8 border border-gray-200">+</button></div></div></div></div>').join('');
+            }
+        }
+        function updateCartItem(index, delta) {
+            let cart = getCart();
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) cart.splice(index, 1);
+            saveCart(cart);
+            initCartBadge();
+            updateCartUI();
+        }
+        function checkout() { alert('请前往商品详情页下单'); closeCart(); }
+        initCartBadge();
+    </script>
+</body>
+</html>

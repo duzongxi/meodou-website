@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - meodou 喵豆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#C9A962',
+                        'gold-light': '#D4B97A',
+                        'gold-dark': '#A88B4A',
+                        'gray-dark': '#333333',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F5F5F5',
+                    },
+                    fontFamily: {
+                        'sans': ['Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    fontWeight: {
+                        'light': '500',
+                        'normal': '500',
+                        'medium': '600',
+                        'semibold': '700',
+                        'bold': '800',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-dark font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl font-medium tracking-wider text-gray-dark">meodou</span>
+                    <span class="text-2xl font-medium tracking-wider text-gold">喵豆</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">首页</a>
+                    <a href="index.html#products" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">探索产品</a>
+                    <a href="presale.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">新品预售</a>
+                    <a href="member.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">会员中心</a>
+                    <a href="orders.html" class="nav-link text-sm tracking-wide text-gold transition-colors duration-300">我的订单</a>
+                    <a href="address.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">地址管理</a>
+                    <a href="customer-service.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">客户服务</a>
+                    <!-- 购物车 -->
+                    <button onclick="openCart()" class="relative p-2 text-gray-medium hover:text-gold transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                        <span id="cart-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-gold text-white text-xs rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+                <button id="menuBtn" class="md:hidden p-2">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+            <!-- 移动端菜单 -->
+            <div id="mobileMenu" class="md:hidden hidden pt-6 pb-4 border-t border-gray-100 mt-4">
+                <div class="flex flex-col space-y-6">
+                    <a href="index.html" class="nav-link text-sm tracking-widest text-gray-medium hover:text-gold transition-colors uppercase">首页</a>
+                    <a href="index.html#products" class="nav-link text-sm tracking-widest text-gray-medium hover:text-gold transition-colors uppercase">探索产品</a>
+                    <a href="presale.html" class="nav-link text-sm tracking-widest text-gray-medium hover:text-gold transition-colors uppercase">新品预售</a>
+                    <a href="member.html" class="nav-link text-sm tracking-widest text-gray-medium hover:text-gold transition-colors uppercase">会员中心</a>
+                    <a href="orders.html" class="nav-link text-sm tracking-widest text-gold uppercase">我的订单</a>
+                    <a href="address.html" class="nav-link text-sm tracking-widest text-gray-medium hover:text-gold transition-colors uppercase">地址管理</a>
+                    <a href="customer-service.html" class="nav-link text-sm tracking-widest text-gray-medium hover:text-gold transition-colors uppercase">客户服务</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面内容 -->
+    <section class="pt-28 pb-20 bg-gray-bg min-h-screen">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="mb-8">
+                <h1 class="text-3xl font-light mb-2">我的订单</h1>
+                <p class="text-gray-light">查看您的所有订单状态和详情</p>
+            </div>
+
+            <!-- 订单列表 -->
+            <div id="order-list" class="space-y-6">
+                <!-- 订单为空提示 -->
+                <div id="empty-order" class="bg-white rounded-lg shadow-sm p-12 text-center">
+                    <svg class="w-20 h-20 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <p class="text-gray-light mb-4">您还没有任何订单</p>
+                    <a href="index.html#products" class="inline-block px-6 py-3 bg-gold text-white rounded hover:bg-gold-dark transition-colors">
+                        去逛逛
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-center mb-8">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl font-light tracking-wider text-white">meodou</span>
+                    <span class="text-2xl font-light tracking-wider text-gold">喵豆</span>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center">
+                <p class="text-gray-600 text-sm">© 2024 meodou 喵豆. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 购物车弹窗 -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <h3 class="text-xl font-light text-gray-dark">购物车</h3>
+                <button onclick="closeCart()" class="text-gray-400 hover:text-gray-dark">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+                <div class="text-center text-gray-light py-12">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                    </svg>
+                    <p>购物车是空的</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-medium">合计</span>
+                    <span class="text-2xl text-gold font-light" id="cart-total">¥0</span>
+                </div>
+                <button onclick="checkout()" class="w-full py-4 bg-gold text-white font-medium hover:bg-gold-dark transition-colors">
+                    结算
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // 订单状态映射
+        const statusMap = {
+            'pending': { text: '待支付', color: 'text-orange-500' },
+            'paid': { text: '已支付', color: 'text-green-500' },
+            'shipped': { text: '已发货', color: 'text-blue-500' },
+            'completed': { text: '已完成', color: 'text-gray-500' },
+            'cancelled': { text: '已取消', color: 'text-red-500' }
+        };
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 渲染订单列表
+        function renderOrderList() {
+            const orders = JSON.parse(localStorage.getItem('meodou_orders') || '[]');
+            const orderList = document.getElementById('order-list');
+            const emptyOrder = document.getElementById('empty-order');
+
+            if (orders.length === 0) {
+                emptyOrder.classList.remove('hidden');
+                return;
+            }
+
+            emptyOrder.classList.add('hidden');
+            orderList.innerHTML = orders.map(order => `
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <!-- 订单头部 -->
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-light mb-1">订单号：${order.orderNo}</p>
+                            <p class="text-sm text-gray-light">下单时间：${formatDate(order.createTime)}</p>
+                        </div>
+                        <span class="font-medium ${statusMap[order.status].color}">${statusMap[order.status].text}</span>
+                    </div>
+
+                    <!-- 商品信息 -->
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex gap-4">
+                            <div class="w-20 h-20 bg-gray-bg flex items-center justify-center rounded">
+                                ${order.productImage ? `<img src="${order.productImage}" alt="${order.productName}" class="w-full h-full object-contain">` : '<span class="text-3xl">🐱</span>'}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium mb-1">${order.productName}</h4>
+                                <p class="text-sm text-gray-light mb-2">${order.sku} x ${order.quantity}</p>
+                                <p class="text-gold font-medium">¥${order.actualAmount.toLocaleString()}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="p-6 flex justify-end gap-3">
+                        ${order.status === 'pending' ? `
+                        <button class="px-4 py-2 border border-gray-200 text-gray-dark rounded hover:bg-gray-bg transition-colors">
+                            取消订单
+                        </button>
+                        <button class="px-4 py-2 bg-gold text-white rounded hover:bg-gold-dark transition-colors">
+                            立即支付
+                        </button>
+                        ` : order.status === 'shipped' ? `
+                        <button class="px-4 py-2 bg-gold text-white rounded hover:bg-gold-dark transition-colors">
+                            确认收货
+                        </button>
+                        ` : ''}
+                        <button class="px-4 py-2 border border-gray-200 text-gray-dark rounded hover:bg-gray-bg transition-colors">
+                            查看详情
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 购物车相关函数
+        function getCart() {
+            const cart = localStorage.getItem('meodou_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('meodou_cart', JSON.stringify(cart));
+        }
+
+        let cart = getCart();
+
+        function initCartBadge() {
+            const cartBadge = document.getElementById('cart-badge');
+            if (cartBadge) {
+                const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartBadge.textContent = totalQty;
+                cartBadge.classList.toggle('hidden', totalQty === 0);
+            }
+        }
+
+        function openCart() {
+            cart = getCart();
+            updateCartUI();
+            document.getElementById('cart-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            if (cartTotal) cartTotal.textContent = '¥' + total.toLocaleString();
+
+            if (!cartItems) return;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center text-gray-light py-12">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                        <p>购物车是空的</p>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="flex gap-4 py-4 border-b border-gray-100">
+                        <div class="w-20 h-20 bg-gray-bg flex items-center justify-center rounded">
+                            <span class="text-3xl">🐱</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-gray-dark font-medium">${item.name}</h4>
+                            <p class="text-gray-light text-sm">${item.color}</p>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-gold">¥${item.price}</span>
+                                <div class="flex items-center">
+                                    <button onclick="updateCartItem(${index}, -1)" class="w-8 h-8 border border-gray-200 flex items-center justify-center">-</button>
+                                    <span class="w-8 text-center">${item.quantity}</span>
+                                    <button onclick="updateCartItem(${index}, 1)" class="w-8 h-8 border border-gray-200 flex items-center justify-center">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateCartItem(index, delta) {
+            cart = getCart();
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            saveCart(cart);
+            initCartBadge();
+            updateCartUI();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('购物车是空的');
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
+
+        // 移动端菜单
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // 初始化
+        renderOrderList();
+        initCartBadge();
+    </script>
+</body>
+</html>

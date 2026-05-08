@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情 - meodou 喵豆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#C9A962',
+                        'gold-light': '#D4B97A',
+                        'gold-dark': '#A88B4A',
+                        'gray-dark': '#333333',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F5F5F5',
+                    },
+                    fontFamily: {
+                        'sans': ['Alibaba PuHuiTi', 'Alibaba-PuHuiTi', 'Microsoft YaHei', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-dark font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl font-medium tracking-wider text-gray-dark">meodou</span>
+                    <span class="text-2xl font-medium tracking-wider text-gold">喵豆</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="index.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">首页</a>
+                    <a href="index.html#products" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">探索产品</a>
+                    <a href="presale.html" class="nav-link text-sm tracking-wide text-gold">新品预售</a>
+                    <a href="member.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">会员中心</a>
+                    <a href="index.html#about" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">关于我们</a>
+                    <a href="customer-service.html" class="nav-link text-sm tracking-wide text-gray-medium hover:text-gold transition-colors duration-300">客户服务</a>
+                </div>
+                <button id="menuBtn" class="md:hidden p-2">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 面包屑 -->
+    <div class="pt-20 bg-gray-bg">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center space-x-2 text-sm text-gray-light">
+                <a href="index.html" class="hover:text-gold transition-colors">首页</a>
+                <span>/</span>
+                <a href="index.html#community" class="hover:text-gold transition-colors">活动专区</a>
+                <span>/</span>
+                <span class="text-gray-dark" id="breadcrumb-title">文章详情</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文章内容 -->
+    <article class="py-16">
+        <div class="max-w-4xl mx-auto px-6">
+            <!-- 文章头部 -->
+            <header class="mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <span id="article-tag" class="bg-gold text-white text-xs px-3 py-1 tracking-widest uppercase">头条</span>
+                    <span id="article-date" class="text-gray-light text-sm">2024.03.17</span>
+                </div>
+                <h1 id="article-title" class="text-3xl md:text-4xl font-light text-gray-dark mb-6">
+                    meodou启程：20岁，人生就是要大胆开闯
+                </h1>
+                <div class="flex items-center gap-6 text-sm text-gray-light">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <span id="article-views">1,234</span> 阅读
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span id="article-likes">89</span> 点赞
+                    </span>
+                </div>
+            </header>
+
+            <!-- 封面图片 -->
+            <div id="article-cover" class="aspect-video bg-gray-bg rounded-lg overflow-hidden mb-12">
+                <img src="images/meodou-journey-cover.jpg" alt="封面图" class="w-full h-full object-cover">
+            </div>
+
+            <!-- 文章正文 -->
+            <div id="article-content" class="prose prose-lg max-w-none text-gray-medium leading-relaxed">
+                <p>佛大在读大学生跨行做宠物产品研发，用一台3D打印机开始了喵豆的故事...</p>
+            </div>
+
+            <!-- 互动区域 -->
+            <div class="mt-12 pt-8 border-t border-gray-100">
+                <div class="flex items-center justify-center gap-8">
+                    <button onclick="toggleLike()" class="flex items-center gap-2 px-6 py-3 border border-gray-200 rounded-full hover:border-gold hover:text-gold transition-colors" id="like-btn">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span id="like-count">89</span> 点赞
+                    </button>
+                    <button onclick="shareArticle()" class="flex items-center gap-2 px-6 py-3 border border-gray-200 rounded-full hover:border-gold hover:text-gold transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                        分享
+                    </button>
+                </div>
+            </div>
+
+            <!-- 相关文章推荐 -->
+            <div class="mt-16">
+                <h3 class="text-xl font-light text-gray-dark mb-8">相关文章推荐</h3>
+                <div class="grid md:grid-cols-3 gap-6" id="related-articles">
+                    <a href="article.html?id=2" class="group">
+                        <div class="bg-gray-bg aspect-video mb-4 overflow-hidden rounded">
+                            <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                                <span class="text-4xl">🏆</span>
+                            </div>
+                        </div>
+                        <h4 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">无砂自净荣获2024红点设计大奖</h4>
+                        <p class="text-xs text-gray-light mt-1">2024.03.15</p>
+                    </a>
+                    <a href="article.html?id=3" class="group">
+                        <div class="bg-gray-bg aspect-video mb-4 overflow-hidden rounded">
+                            <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                                <span class="text-4xl">📰</span>
+                            </div>
+                        </div>
+                        <h4 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">春季新品发布会报名开启</h4>
+                        <p class="text-xs text-gray-light mt-1">2024.03.10</p>
+                    </a>
+                    <a href="article.html?id=4" class="group">
+                        <div class="bg-gray-bg aspect-video mb-4 overflow-hidden rounded">
+                            <div class="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                                <span class="text-4xl">🏅</span>
+                            </div>
+                        </div>
+                        <h4 class="text-sm font-light text-gray-dark group-hover:text-gold transition-colors">入选2024年度最具创新力品牌</h4>
+                        <p class="text-xs text-gray-light mt-1">2024.03.05</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-dark text-white py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <span class="text-xl font-light tracking-wider text-white">meodou</span>
+                        <span class="text-xl font-light tracking-wider text-gold">喵豆</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        科技，让爱更简单<br>
+                        为宠物创造更美好的生活
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm tracking-wider mb-6">产品</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="product-detail.html?id=1" class="hover:text-gold transition-colors">喵豆智能盆</a></li>
+                        <li><a href="product-detail.html?id=2" class="hover:text-gold transition-colors">智享喂食器</a></li>
+                        <li><a href="product-detail.html?id=3" class="hover:text-gold transition-colors">活泉饮水机</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm tracking-wider mb-6">服务</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="customer-service.html" class="hover:text-gold transition-colors">在线客服</a></li>
+                        <li><a href="#" class="hover:text-gold transition-colors">售后服务</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm tracking-wider mb-6">联系我们</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li>客服热线：400-888-6666</li>
+                        <li>服务时间：9:00-21:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center">
+                <p class="text-gray-600 text-sm">© 2024 meodou 喵豆. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 文章数据配置
+        const articleData = {
+            '1': {
+                tag: '头条',
+                title: 'meodou启程：20岁，人生就是要大胆开闯',
+                date: '2024.03.17',
+                views: '1,234',
+                likes: '89',
+                cover: 'images/meodou-journey-cover.jpg',
+                content: `
+                    <p class="mb-6">佛大在读大学生跨行做宠物产品研发，用一台3D打印机开始了喵豆的故事...</p>
+                    <p class="mb-6">2024年，一个20岁的大学生做出了一个大胆的决定——跨行做宠物产品研发。没有经验，没有资源，只有一台3D打印机和满腔的热情。</p>
+                    <p class="mb-6">"我觉得年轻人就应该敢于尝试，即使失败了也是一种成长。"——这是喵豆创始人的座右铭。</p>
+                    <p class="mb-6">从最初的概念设计到产品成型，经过无数次的迭代和改进，喵豆终于有了自己的第一批产品——无砂自净智能猫厕所。</p>
+                    <p class="mb-6">"我希望用科技的力量，让养猫变得更加简单和快乐。"这是喵豆一直坚持的理念。</p>
+                    <p>未来，喵豆将继续推出更多智能宠物产品，让每一个养宠家庭都能感受到科技的温暖。</p>
+                `
+            },
+            '2': {
+                tag: '品牌',
+                title: '无砂自净荣获2024红点设计大奖',
+                date: '2024.03.15',
+                views: '2,567',
+                likes: '156',
+                cover: 'images/meodou-journey-design.png',
+                content: `
+                    <p class="mb-6">德国红点设计大奖揭晓，喵豆无砂自净智能猫厕所凭借创新设计斩获殊荣！</p>
+                    <p class="mb-6">红点设计大奖是国际设计界的顶级奖项之一，每年吸引来自全球的设计师和品牌参与评选。</p>
+                    <p class="mb-6">无砂自净智能猫厕所以其独特的免猫砂设计、简洁的外观和智能化的功能打动了评审团。</p>
+                    <p>"这个设计真正解决了养猫人的痛点，是一款既实用又美观的产品。"——评审团评语</p>
+                `
+            },
+            '3': {
+                tag: '新闻',
+                title: '春季新品发布会报名开启',
+                date: '2024.03.10',
+                views: '3,891',
+                likes: '234',
+                cover: '',
+                content: `
+                    <p class="mb-6">好消息！喵豆春季新品发布会将于4月举行，限量体验名额等你来抢！</p>
+                    <p class="mb-6">本次发布会将公布多款重磅新品，包括全新升级的智能喂食器、饮水机以及宠物智能用品。</p>
+                    <p class="mb-6">报名方式：即日起至3月31日，点击下方按钮填写报名信息，即可有机会获得现场参加发布会的名额。</p>
+                    <p>未能到场的用户也可通过直播观看发布会全程，更有线上抽奖活动等你参与！</p>
+                `
+            },
+            '4': {
+                tag: '荣誉',
+                title: '入选2024年度最具创新力品牌',
+                date: '2024.03.05',
+                views: '1,892',
+                likes: '178',
+                cover: '',
+                content: `
+                    <p class="mb-6">喵豆再次传来喜讯！凭借在宠物智能用品领域的创新突破，喵豆入选2024年度最具创新力品牌榜单。</p>
+                    <p class="mb-6">这是喵豆连续第二年获得此殊荣，是对品牌创新能力的极大认可。</p>
+                    <p>未来，喵豆将继续坚持创新，为用户提供更多优质的智能宠物产品。</p>
+                `
+            },
+            '5': {
+                tag: '活动',
+                title: '喵星人最美睡姿大赛',
+                date: '2024.03.01',
+                views: '5,234',
+                likes: '456',
+                cover: '',
+                content: `
+                    <p class="mb-6">上传你家主子的睡姿照片，赢取无砂自净智能猫厕所！</p>
+                    <p class="mb-6"><strong>活动规则：</strong></p>
+                    <p class="mb-6">1. 拍摄你家猫咪的睡姿照片（必须原创）</p>
+                    <p class="mb-6">2. 上传至喵豆APP活动专区</p>
+                    <p class="mb-6">3. 邀请好友为你的作品点赞</p>
+                    <p class="mb-6"><strong>奖品设置：</strong></p>
+                    <p>一等奖：無砂自凈智能貓廁所（1名）<br>二等奖：智能喂食器（3名）<br>三等奖：活泉饮水机（6名）</p>
+                `
+            },
+            '6': {
+                tag: '活动',
+                title: '产品体验官招募计划',
+                date: '2024.02.25',
+                views: '3,567',
+                likes: '289',
+                cover: '',
+                content: `
+                    <p class="mb-6">成为喵豆体验官，免费试用新品并分享使用心得！</p>
+                    <p class="mb-6"><strong>我们需要这样的你：</strong></p>
+                    <p class="mb-6">1. 热爱宠物，有养猫经验</p>
+                    <p class="mb-6">2. 喜欢分享，有社交媒体运营经验</p>
+                    <p class="mb-6">3. 善于发现产品优点和不足</p>
+                    <p><strong>体验官福利：</strong>免费获得新品、专属客服、优先购买权</p>
+                `
+            },
+            '7': {
+                tag: '活动',
+                title: '好评有礼活动',
+                date: '2024.02.15',
+                views: '4,123',
+                likes: '312',
+                cover: '',
+                content: `
+                    <p class="mb-6">购买产品后发布好评截图，即可参与抽奖赢取耗材礼包！</p>
+                    <p class="mb-6"><strong>活动时间：</strong>长期有效</p>
+                    <p class="mb-6"><strong>参与方式：</strong></p>
+                    <p class="mb-6">1. 购买喵豆产品</p>
+                    <p class="mb-6">2. 在天猫/京东旗舰店发布好评并截图</p>
+                    <p class="mb-6">3. 联系客服上传截图</p>
+                    <p>每周抽奖一次，奖品为价值199元的耗材礼包！</p>
+                `
+            },
+            '8': {
+                tag: '公告',
+                title: 'APP 2.0版本正式上线',
+                date: '2024.03.12',
+                views: '5,678',
+                likes: '234',
+                cover: '',
+                content: `
+                    <p class="mb-6">喵豆APP 2.0版本正式上线！此次更新带来了多项重磅功能优化。</p>
+                    <p class="mb-6"><strong>新增功能：</strong></p>
+                    <p class="mb-6">1. 全新UI界面，视觉效果更清爽</p>
+                    <p class="mb-6">2. 新增猫咪健康档案功能</p>
+                    <p class="mb-6">3. 优化设备连接速度，连接更稳定</p>
+                    <p class="mb-6">4. 新增智能场景联动</p>
+                    <p>立即更新APP，体验全新功能！</p>
+                `
+            },
+            '9': {
+                tag: '公告',
+                title: '售后服务政策升级公告',
+                date: '2024.03.08',
+                views: '3,456',
+                likes: '189',
+                cover: '',
+                content: `
+                    <p class="mb-6">为更好地服务用户，喵豆售后服务政策全面升级！</p>
+                    <p class="mb-6"><strong>升级内容：</strong></p>
+                    <p class="mb-6">1. 30天无理由退换（升级前为7天）</p>
+                    <p class="mb-6">2. 180天只换不修服务</p>
+                    <p class="mb-6">3. 终身质保服务（指定产品）</p>
+                    <p class="mb-6">4. 新增上门取件服务</p>
+                    <p>更多详情请咨询客服。</p>
+                `
+            },
+            '10': {
+                tag: '公告',
+                title: '春节期间物流安排通知',
+                date: '2024.02.05',
+                views: '8,901',
+                likes: '345',
+                cover: '',
+                content: `
+                    <p class="mb-6">尊敬的用户，春节期间物流安排如下，请合理安排购买时间。</p>
+                    <p class="mb-6"><strong>物流停运时间：</strong>2024年2月9日至2月15日</p>
+                    <p class="mb-6"><strong>最后发货日期：</strong>2024年2月5日（按订单顺序发出）</p>
+                    <p class="mb-6"><strong>恢复发货日期：</strong>2024年2月16日</p>
+                    <p>节日期间如有紧急需求，请联系客服处理。祝大家新年快乐！</p>
+                `
+            },
+            '11': {
+                tag: '公告',
+                title: '喵豆官方商城正式运营',
+                date: '2024.01.20',
+                views: '6,234',
+                likes: '456',
+                cover: '',
+                content: `
+                    <p class="mb-6">喵豆官方商城正式运营！全系产品，正品保障，优惠多多。</p>
+                    <p class="mb-6"><strong>开业福利：</strong></p>
+                    <p class="mb-6">1. 新用户首单满减50元</p>
+                    <p class="mb-6">2. 全场产品享9折优惠</p>
+                    <p class="mb-6">3. 会员积分翻倍</p>
+                    <p>欢迎大家前来选购！</p>
+                `
+            },
+            '12': {
+                tag: '故事',
+                title: '橘猫铲屎官的养宠心得',
+                date: '2024.01.15',
+                views: '2,345',
+                likes: '178',
+                cover: '',
+                content: `
+                    <p class="mb-6">"自从用了无砂自净，再也不用铲屎了！家里也没有异味，主子也很喜欢..."</p>
+                    <p class="mb-6">养猫三年，最让我头疼的就是铲屎问题。直到遇到了喵豆无砂自净，彻底改变了我的养宠生活。</p>
+                    <p class="mb-6">以前每天都要清理猫砂盆，周末还要整个更换猫砂，又脏又累。现在完全解放了双手，而且家里再也没有异味。</p>
+                    <p>主子是只橘猫，从小吃货一枚，现在吃饭睡觉都变得更规律了。APP还能监测它的健康数据，真的太贴心了！</p>
+                `
+            },
+            '13': {
+                tag: '故事',
+                title: '程序员的养宠黑科技',
+                date: '2024.01.10',
+                views: '3,567',
+                likes: '234',
+                cover: '',
+                content: `
+                    <p class="mb-6">"智能喂食器解决了我出差的后顾之忧，APP远程控制太方便了！"</p>
+                    <p class="mb-6">作为程序员，经常需要加班出差。以前最放心不下家里的猫咪，现在有了喵豆智能喂食器，随时随地都能照顾它。</p>
+                    <p class="mb-6">通过APP可以设置喂食时间和分量，还能实时看到主子的进食情况。即使出差一周，也完全不用担心它饿着。</p>
+                    <p>科技改变生活，这就是作为一个技术宅的幸福吧！</p>
+                `
+            },
+            '14': {
+                tag: '故事',
+                title: '更多用户故事',
+                date: '2024.01.01',
+                views: '10,234',
+                likes: '567',
+                cover: '',
+                content: `
+                    <p class="mb-6">感谢每一位选择喵豆的用户，是你们的支持让我们不断前行。</p>
+                    <p class="mb-6">在这里，我们收集了无数个温暖人心的养宠故事。有的是新手爸妈第一次养猫的紧张与期待，有的是资深铲屎官多年来的心得体会...</p>
+                    <p class="mb-6">每一个故事都是真实的，每一份信任都是珍贵的。</p>
+                    <p>如果你也有想分享的故事，欢迎投稿至 hello@meodou.com，我们期待听到你的声音。</p>
+                `
+            }
+        };
+
+        // 加载文章内容
+        function loadArticle() {
+            const articleId = new URLSearchParams(window.location.search).get('id') || '1';
+            const article = articleData[articleId];
+
+            if (article) {
+                document.getElementById('article-tag').textContent = article.tag;
+                document.getElementById('article-title').textContent = article.title;
+                document.getElementById('breadcrumb-title').textContent = article.title;
+                document.getElementById('article-date').textContent = article.date;
+                document.getElementById('article-views').textContent = article.views;
+                document.getElementById('article-likes').textContent = article.likes;
+                document.getElementById('like-count').textContent = article.likes;
+                document.title = article.title + ' - meodou 喵豆';
+
+                // 封面图
+                const coverContainer = document.getElementById('article-cover');
+                if (article.cover) {
+                    coverContainer.innerHTML = `<img src="${article.cover}" alt="封面图" class="w-full h-full object-cover">`;
+                } else {
+                    coverContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gold/10 to-gold/5"><span class="text-6xl">📄</span></div>`;
+                }
+
+                // 文章内容
+                document.getElementById('article-content').innerHTML = article.content;
+            }
+        }
+
+        // 点赞功能
+        let liked = false;
+        function toggleLike() {
+            liked = !liked;
+            const btn = document.getElementById('like-btn');
+            const countEl = document.getElementById('like-count');
+            let count = parseInt(countEl.textContent);
+
+            if (liked) {
+                count++;
+                btn.classList.add('border-gold', 'text-gold');
+            } else {
+                count--;
+                btn.classList.remove('border-gold', 'text-gold');
+            }
+            countEl.textContent = count;
+        }
+
+        // 分享功能
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.getElementById('article-title').textContent,
+                    url: window.location.href
+                });
+            } else {
+                // 复制链接
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('链接已复制到剪贴板');
+                });
+            }
+        }
+
+        // 初始化
+        loadArticle();
+    </script>
+</body>
+</html>
